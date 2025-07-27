@@ -65,10 +65,20 @@ const analysisSchema = {
 };
 
 
-export const analyzeGames = async (pgnOfLostGames: string, lichessUser: string, language: 'en' | 'de'): Promise<AnalysisReportData> => {
+export const analyzeGames = async (pgnOfLostGames: string, lichessUser: string, language: 'en' | 'de' | 'hy'): Promise<AnalysisReportData> => {
   const model = "gemini-2.5-flash";
 
-  const languageName = language === 'de' ? 'German' : 'English';
+  let languageName: string;
+  switch (language) {
+    case 'de':
+      languageName = 'German';
+      break;
+    case 'hy':
+      languageName = 'Armenian';
+      break;
+    default:
+      languageName = 'English';
+  }
 
   const prompt = `
     Analyze the following chess games that I, Lichess user "${lichessUser}", have lost.

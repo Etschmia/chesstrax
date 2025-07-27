@@ -59,7 +59,7 @@ const App: React.FC = () => {
 
     try {
       const gamesToAnalyze = lostGamesPgn.slice(-50).join('\n\n');
-      const result = await analyzeGames(gamesToAnalyze, lichessUser, i18n.language as 'en' | 'de');
+      const result = await analyzeGames(gamesToAnalyze, lichessUser, i18n.language as 'en' | 'de' | 'hy');
       setAnalysisResult(result);
       setAnalysisDate(new Date());
     } catch (e) {
@@ -70,7 +70,7 @@ const App: React.FC = () => {
     }
   }, [lichessUser, lostGamesPgn, i18n.language, t]);
 
-  const changeLanguage = (lng: 'en' | 'de') => {
+  const changeLanguage = (lng: 'en' | 'de' | 'hy') => {
     i18n.changeLanguage(lng);
   };
 
@@ -117,6 +117,12 @@ const App: React.FC = () => {
                     className={`w-full rounded-md py-2 text-sm font-semibold transition-colors ${i18n.language === 'de' ? 'bg-accent text-gray-primary' : 'text-text-secondary hover:bg-gray-primary/80'}`}
                 >
                     Deutsch
+                </button>
+                <button
+                    onClick={() => changeLanguage('hy')}
+                    className={`w-full rounded-md py-2 text-sm font-semibold transition-colors ${i18n.language === 'hy' ? 'bg-accent text-gray-primary' : 'text-text-secondary hover:bg-gray-primary/80'}`}
+                >
+                    Հայերեն
                 </button>
             </div>
           </div>

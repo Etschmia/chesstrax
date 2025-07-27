@@ -5,6 +5,7 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 
 import translationEN from './locales/en/translation.json';
 import translationDE from './locales/de/translation.json';
+import translationHY from './locales/hy/translation.json';
 
 i18n
   .use(LanguageDetector)
@@ -21,6 +22,9 @@ i18n
       },
       de: {
         translation: translationDE,
+      },
+      hy: {
+        translation: translationHY,
       },
     },
   });
