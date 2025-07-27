@@ -182,6 +182,9 @@ const App: React.FC = () => {
         )}
 
       </main>
+      <footer className="text-center py-4 text-text-secondary text-sm">
+        <p>Project homepage: <a href="https://github.com/Etschmia/chesstrax-ai-coach" target="_blank" rel="noopener noreferrer" className="text-accent hover:underline">github.com/Etschmia/chesstrax-ai-coach</a></p>
+      </footer>
     </div>
   );
 };

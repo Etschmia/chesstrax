@@ -1,7 +1,7 @@
 
 {
   "appTitle": "ChessTrax KI-Trainer",
-  "appDescription": "Lade deine Lichess PGN hoch und erhalte einen personalisierten Trainingsplan, der von Gemini bereitgestellt wird.",
+  "appDescription": "Lade deine Lichess PGN hoch und erhalte deinen persönlichen Trainingsplan, der von Gemini bereitgestellt wird.",
   "lichessUsername": "Lichess-Benutzername",
   "fileUpload": "Datei-Upload",
   "clickToUpload": "Zum Hochladen klicken",
