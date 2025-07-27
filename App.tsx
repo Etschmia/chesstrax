@@ -82,30 +82,11 @@ const App: React.FC = () => {
             <LayoutGrid className="h-10 w-10 text-accent" />
             <h1 className="text-4xl md:text-5xl font-bold text-text-primary tracking-tight">{t('appTitle')}</h1>
           </div>
-          <p className="text-lg md:text-xl text-text-secondary max-w-3xl mx-auto">
-            {t('appDescription')}
-          </p>
-        </header>
-
-        <div className="max-w-4xl mx-auto bg-gray-secondary p-6 md:p-8 rounded-2xl shadow-2xl border border-gray-tertiary">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-            <div>
-              <label htmlFor="lichessUser" className="block text-sm font-medium text-text-secondary mb-2">{t('lichessUsername')}</label>
-              <input
-                type="text"
-                id="lichessUser"
-                value={lichessUser}
-                onChange={(e) => setLichessUser(e.target.value)}
-                placeholder={t('lichessUsernamePlaceholder')}
-                className="w-full bg-gray-tertiary text-text-primary placeholder-text-secondary rounded-lg px-4 py-3 border border-transparent focus:outline-none focus:ring-2 focus:ring-accent"
-              />
-            </div>
-            <FileUpload onFileSelect={handleFileSelect} />
-          </div>
-
-          <div className="mb-6">
-            <label className="block text-sm font-medium text-text-secondary mb-2">{t('language')}</label>
-            <div className="flex rounded-lg bg-gray-tertiary p-1">
+          <div className="flex flex-col md:flex-row items-center justify-center gap-4 mb-10 md:mb-16">
+            <p className="text-lg md:text-xl text-text-secondary max-w-3xl mx-auto text-center md:text-left">
+              {t('appDescription')}
+            </p>
+            <div className="flex gap-4 rounded-lg bg-gray-tertiary p-1">
                 <button
                     onClick={() => changeLanguage('en')}
                     className={`w-full rounded-md py-2 text-sm font-semibold transition-colors ${i18n.language === 'en' ? 'bg-accent text-gray-primary' : 'text-text-secondary hover:bg-gray-primary/80'}`}
@@ -125,6 +106,23 @@ const App: React.FC = () => {
                     Հայերեն
                 </button>
             </div>
+          </div>
+        </header>
+
+        <div className="max-w-4xl mx-auto bg-gray-secondary p-6 md:p-8 rounded-2xl shadow-2xl border border-gray-tertiary">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div>
+              <label htmlFor="lichessUser" className="block text-sm font-medium text-text-secondary mb-2">{t('lichessUsername')}</label>
+              <input
+                type="text"
+                id="lichessUser"
+                value={lichessUser}
+                onChange={(e) => setLichessUser(e.target.value)}
+                placeholder={t('lichessUsernamePlaceholder')}
+                                className="w-full h-12 bg-gray-tertiary text-text-primary placeholder-text-secondary rounded-lg px-4 py-3 border border-transparent focus:outline-none focus:ring-2 focus:ring-accent"
+              />
+            </div>
+            <FileUpload onFileSelect={handleFileSelect} />
           </div>
 
           <button

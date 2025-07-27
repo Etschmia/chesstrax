@@ -46,10 +46,10 @@ const FileUpload: React.FC<FileUploadProps> = ({ onFileSelect }) => {
       />
       <div
         onClick={handleButtonClick}
-        className="w-full h-full min-h-[50px] bg-gray-tertiary border-2 border-dashed border-gray-tertiary hover:border-accent rounded-lg p-3 flex items-center justify-center cursor-pointer transition-colors duration-200"
+        className="w-full h-12 bg-gray-tertiary border-2 border-dashed border-gray-tertiary hover:border-accent rounded-lg flex items-center justify-center cursor-pointer transition-colors duration-200"
       >
         {fileName ? (
-          <div className="flex items-center gap-3 text-text-primary">
+          <div className="flex items-center gap-3 text-text-primary px-4 py-3">
             <FileText className="h-5 w-5 text-accent" />
             <span className="text-sm font-medium truncate">{fileName}</span>
             <button onClick={handleRemoveFile} className="p-1 rounded-full hover:bg-gray-primary">
@@ -57,7 +57,7 @@ const FileUpload: React.FC<FileUploadProps> = ({ onFileSelect }) => {
             </button>
           </div>
         ) : (
-          <div className="flex items-center gap-3 text-text-secondary">
+          <div className="flex items-center gap-3 text-text-secondary px-4 py-3">
             <UploadCloud className="h-5 w-5" />
             <span className="text-sm font-medium">{t('clickToUpload')}</span>
           </div>
