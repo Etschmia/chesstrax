@@ -1,5 +1,6 @@
 
 import React, { useState, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { UploadCloud, FileText, X } from 'lucide-react';
 
 interface FileUploadProps {
@@ -7,6 +8,7 @@ interface FileUploadProps {
 }
 
 const FileUpload: React.FC<FileUploadProps> = ({ onFileSelect }) => {
+  const { t } = useTranslation();
   const [fileName, setFileName] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -34,7 +36,7 @@ const FileUpload: React.FC<FileUploadProps> = ({ onFileSelect }) => {
 
   return (
     <div>
-       <label className="block text-sm font-medium text-text-secondary mb-2">Upload PGN File</label>
+       <label className="block text-sm font-medium text-text-secondary mb-2">{t('fileUpload')}</label>
       <input
         type="file"
         ref={fileInputRef}
@@ -57,7 +59,7 @@ const FileUpload: React.FC<FileUploadProps> = ({ onFileSelect }) => {
         ) : (
           <div className="flex items-center gap-3 text-text-secondary">
             <UploadCloud className="h-5 w-5" />
-            <span className="text-sm font-medium">Click to upload</span>
+            <span className="text-sm font-medium">{t('clickToUpload')}</span>
           </div>
         )}
       </div>

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import type { AnalysisReportData } from '../types';
@@ -13,7 +14,7 @@ interface AnalysisReportProps {
 }
 
 const TrainingLink: React.FC<{ href: string, children: React.ReactNode }> = ({ href, children }) => (
-    <a 
+    <a
         href={href}
         target="_blank"
         rel="noopener noreferrer"
@@ -24,6 +25,7 @@ const TrainingLink: React.FC<{ href: string, children: React.ReactNode }> = ({ h
 )
 
 const AnalysisReport: React.FC<AnalysisReportProps> = ({ data, lichessUser, gameDateRange, analysisDate }) => {
+  const { t } = useTranslation();
   const [isDownloadingPdf, setIsDownloadingPdf] = useState(false);
   const [didCopyToClipboard, setDidCopyToClipboard] = useState(false);
 
@@ -54,30 +56,30 @@ const AnalysisReport: React.FC<AnalysisReportProps> = ({ data, lichessUser, game
   
   const handleCopyToClipboard = () => {
     const generatePlainTextReport = (): string => {
-        let text = `ChessTrax AI Coach - Analysis Report\n`;
+        let text = `${t('clipboardReportTitle')}\n`;
         text += `======================================\n\n`;
-        text += `Lichess Username: ${lichessUser}\n`;
-        text += `Analysis Date: ${analysisDate.toLocaleDateString()}\n`;
-        text += `Game Period Covered: ${gameDateRange}\n`;
-        text += `Analysis powered by: ChessTrax AI Coach using Google Gemini 2.5 Flash. No engines were used.\n\n`;
+        text += `${t('clipboardLichessUser', { user: lichessUser })}\n`;
+        text += `${t('clipboardAnalysisDate', { date: analysisDate.toLocaleDateString() })}\n`;
+        text += `${t('clipboardGamePeriod', { range: gameDateRange })}\n`;
+        text += `${t('clipboardPoweredBy')}\n\n`;
 
-        text += `--- PRIMARY FOCUS ---\n${data.summary}\n\n`;
+        text += `${t('clipboardPrimaryFocus')}\n${data.summary}\n\n`;
 
-        text += `--- OPENING ANALYSIS ---\n`;
-        text += `As White:\n${data.openingAnalysis.asWhite}\n\n`;
-        text += `As Black:\n${data.openingAnalysis.asBlack}\n\n`;
+        text += `${t('clipboardOpeningAnalysis')}\n`;
+        text += `${t('clipboardAsWhite')}\n${data.openingAnalysis.asWhite}\n\n`;
+        text += `${t('clipboardAsBlack')}\n${data.openingAnalysis.asBlack}\n\n`;
 
-        text += `--- TACTICAL BLIND-SPOTS ---\n`;
+        text += `${t('clipboardTacticalBlindSpots')}\n`;
         data.tacticalMotifs.forEach(item => {
             text += `* ${item.motif}:\n${item.explanation}\n\n`;
         });
 
-        text += `--- STRATEGIC WEAKNESSES ---\n`;
+        text += `${t('clipboardStrategicWeaknesses')}\n`;
         data.strategicWeaknesses.forEach(item => {
             text += `* ${item.weakness}:\n${item.explanation}\n\n`;
         });
         
-        text += `--- ENDGAME TRAINING ---\n`;
+        text += `${t('clipboardEndgameTraining')}\n`;
         data.endgamePractice.forEach(item => {
             text += `* ${item.endgameType}:\n${item.explanation}\n\n`;
         });
@@ -95,48 +97,48 @@ const AnalysisReport: React.FC<AnalysisReportProps> = ({ data, lichessUser, game
     <>
     <div id="exportable-area" className="bg-gray-primary p-6 md:p-8">
         <div className="mb-8 border-b border-gray-tertiary pb-6">
-            <h2 className="text-3xl font-bold text-text-primary mb-3">Your Personalized Analysis</h2>
+            <h2 className="text-3xl font-bold text-text-primary mb-3">{t('yourPersonalizedAnalysis')}</h2>
             <div className="grid grid-cols-2 gap-x-6 gap-y-2 text-sm text-text-secondary">
-                <p><strong className="text-text-primary">Lichess User:</strong> {lichessUser}</p>
-                <p><strong className="text-text-primary">Analysis Date:</strong> {analysisDate.toLocaleDateString()}</p>
-                <p><strong className="text-text-primary">Game Period:</strong> {gameDateRange}</p>
-                <p><strong className="text-text-primary">AI Model:</strong> Gemini 2.5 Flash</p>
+                <p><strong className="text-text-primary">{t('lichessUserLabel')}</strong> {lichessUser}</p>
+                <p><strong className="text-text-primary">{t('analysisDateLabel')}</strong> {analysisDate.toLocaleDateString()}</p>
+                <p><strong className="text-text-primary">{t('gamePeriodLabel')}</strong> {gameDateRange}</p>
+                <p><strong className="text-text-primary">{t('aiModelLabel')}</strong> Gemini 2.5 Flash</p>
             </div>
         </div>
 
         <div className="space-y-8">
-            <ReportCard icon={Star} title="Primary Focus">
+            <ReportCard icon={Star} title={t('primaryFocus')}>
                 <p className="text-text-secondary">{data.summary}</p>
             </ReportCard>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <ReportCard icon={BookOpen} title="Opening Analysis">
+            <ReportCard icon={BookOpen} title={t('openingAnalysis')}>
                 <div className='space-y-4'>
                     <div>
-                        <h4 className="font-bold text-text-primary mb-1">As White</h4>
+                        <h4 className="font-bold text-text-primary mb-1">{t('asWhite')}</h4>
                         <p className="text-text-secondary">{data.openingAnalysis.asWhite}</p>
                     </div>
                      <div>
-                        <h4 className="font-bold text-text-primary mb-1">As Black</h4>
+                        <h4 className="font-bold text-text-primary mb-1">{t('asBlack')}</h4>
                         <p className="text-text-secondary">{data.openingAnalysis.asBlack}</p>
                     </div>
-                    <TrainingLink href="https://lichess.org/opening">Explore openings on Lichess</TrainingLink>
+                    <TrainingLink href="https://lichess.org/opening">{t('exploreOpenings')}</TrainingLink>
                 </div>
             </ReportCard>
             
-            <ReportCard icon={Target} title="Tactical Blind-Spots">
+            <ReportCard icon={Target} title={t('tacticalBlindSpots')}>
               <ul className="space-y-4">
                 {data.tacticalMotifs.map((motif, index) => (
                   <li key={index}>
                     <h4 className="font-bold text-text-primary">{motif.motif}</h4>
                     <p className="text-text-secondary mb-2">{motif.explanation}</p>
-                    <TrainingLink href={`https://lichess.org/training/themes`}>Practice tactics by theme</TrainingLink>
+                    <TrainingLink href={`https://lichess.org/training/themes`}>{t('practiceTactics')}</TrainingLink>
                   </li>
                 ))}
               </ul>
             </ReportCard>
             
-            <ReportCard icon={BrainCircuit} title="Strategic Weaknesses">
+            <ReportCard icon={BrainCircuit} title={t('strategicWeaknesses')}>
               <ul className="space-y-4">
                 {data.strategicWeaknesses.map((weakness, index) => (
                   <li key={index}>
@@ -147,13 +149,13 @@ const AnalysisReport: React.FC<AnalysisReportProps> = ({ data, lichessUser, game
               </ul>
             </ReportCard>
 
-            <ReportCard icon={Shield} title="Endgame Training">
+            <ReportCard icon={Shield} title={t('endgameTraining')}>
               <ul className="space-y-4">
                 {data.endgamePractice.map((endgame, index) => (
                   <li key={index}>
                     <h4 className="font-bold text-text-primary">{endgame.endgameType}</h4>
                     <p className="text-text-secondary mb-2">{endgame.explanation}</p>
-                     <TrainingLink href="https://lichess.org/practice">Train endgames on Lichess</TrainingLink>
+                     <TrainingLink href="https://lichess.org/practice">{t('trainEndgames')}</TrainingLink>
                   </li>
                 ))}
               </ul>
@@ -163,7 +165,7 @@ const AnalysisReport: React.FC<AnalysisReportProps> = ({ data, lichessUser, game
     </div>
     
     <div className="mt-8 p-6 bg-gray-secondary rounded-2xl border border-gray-tertiary flex flex-col sm:flex-row items-center justify-center gap-4">
-        <h3 className="font-bold text-lg text-text-primary">Export Your Plan</h3>
+        <h3 className="font-bold text-lg text-text-primary">{t('exportYourPlan')}</h3>
         <div className="flex items-stretch gap-3">
              <button
                 onClick={handleDownloadPdf}
@@ -171,17 +173,17 @@ const AnalysisReport: React.FC<AnalysisReportProps> = ({ data, lichessUser, game
                 className="flex items-center justify-center gap-2 bg-accent/90 hover:bg-accent text-gray-primary font-bold py-2 px-4 rounded-lg transition-all duration-200 disabled:bg-gray-tertiary disabled:text-text-secondary disabled:cursor-not-allowed"
             >
                 <FileDown size={18} />
-                {isDownloadingPdf ? 'Creating PDF...' : 'Download PDF'}
+                {isDownloadingPdf ? t('creatingPdf') : t('downloadPdf')}
             </button>
             <div className="flex items-center gap-2">
                 <button
                     onClick={handleCopyToClipboard}
                     className="flex items-center justify-center gap-2 bg-gray-tertiary hover:bg-gray-primary text-text-primary font-bold py-2 px-4 rounded-lg transition-all duration-200"
                 >
-                    {didCopyToClipboard ? <><Check size={18} className="text-green-400" /> Copied!</> : <><Clipboard size={18} /> Copy for Docs</>}
+                    {didCopyToClipboard ? <><Check size={18} className="text-green-400" /> {t('copied')}</> : <><Clipboard size={18} /> {t('copyForDocs')}</>}
                 </button>
                  <a href="https://docs.new" target="_blank" rel="noopener noreferrer" className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition-colors">
-                    Open Google Docs
+                    {t('openGoogleDocs')}
                 </a>
             </div>
         </div>
