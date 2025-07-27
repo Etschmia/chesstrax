@@ -101,7 +101,7 @@ const App: React.FC = () => {
           </div>
 
           <div className="mb-6">
-            <label className="block text-sm font-medium text-text-secondary mb-2">Analysis Language</label>
+            <label className="block text-sm font-medium text-text-secondary mb-2">Language</label>
             <div className="flex rounded-lg bg-gray-tertiary p-1">
                 <button
                     onClick={() => setLanguage('en')}
