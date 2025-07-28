@@ -12,6 +12,9 @@ export default defineConfig(({ mode }) => {
         alias: {
           '@': path.resolve(__dirname, '.'),
         }
+      },
+      server: {  // Neu hinzugefügtes Objekt
+        allowedHosts: ['app.3z5.de']  // Hier deinen Host eintragen; Array für mehrere möglich
       }
     };
 });
