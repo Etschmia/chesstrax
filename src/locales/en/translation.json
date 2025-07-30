@@ -1,6 +1,6 @@
 
 {
-  "appTitle": "ChessTrax AI Coach",
+  "appTitle": "ChessTrax",
   "appDescription": "Upload your Lichess PGN. Get a personalized training plan powered by Gemini.",
   "lichessUsername": "Lichess Username",
   "fileUpload": "File Upload",

@@ -59,8 +59,8 @@ const AnalysisReport: React.FC<AnalysisReportProps> = ({ data, lichessUser, mode
     const generatePlainTextReport = (): string => {
         let text = `${t('clipboardReportTitle')}\n`;
         text += `======================================\n\n`;
-        text += `${t('clipboardLichessUser', { user: lichessUser })}\n`;
-        text += `${t('clipboardAnalysisDate', { date: analysisDate.toLocaleDateString() })}\n\n`;
+        text += `${t('clipboardLichessUser', { user: lichessUser })}\n\n`;
+        text += `${t('clipboardAnalysisDate', { date: analysisDate.toLocaleDateString() })}\n`;
         text += `${t('clipboardGamePeriod', { range: gameDateRange })}\n`;
         text += `${t('clipboardPoweredBy', { model: modelName })}\n\n`;
 
