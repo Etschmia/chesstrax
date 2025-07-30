@@ -66,7 +66,7 @@ const analysisSchema = {
 
 
 export const analyzeGames = async (pgnOfLostGames: string, lichessUser: string, language: 'en' | 'de' | 'hy'): Promise<AnalysisReportData> => {
-  const model = "gemini-2.5-flash";
+  const model = "gemini-2.5-pro";
 
   let languageName: string;
   switch (language) {

@@ -42,7 +42,7 @@
   "clipboardLichessUser": "Lichess Username: {{user}}",
   "clipboardAnalysisDate": "Analysis Date: {{date}}",
   "clipboardGamePeriod": "Game Period Covered: {{range}}",
-  "clipboardPoweredBy": "Analysis powered by: ChessTrax AI Coach using Google Gemini 2.5 Flash. No engines were used.",
+  "clipboardPoweredBy": "Analysis powered by: ChessTrax AI Coach using Google {{model}}. No engines were used.",
   "clipboardPrimaryFocus": "--- PRIMARY FOCUS ---",
   "clipboardOpeningAnalysis": "--- OPENING ANALYSIS ---",
   "clipboardAsWhite": "As White:",
