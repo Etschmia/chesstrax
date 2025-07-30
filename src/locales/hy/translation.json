@@ -1,5 +1,5 @@
 {
-  "appTitle": "ChessTrax AI Coach",
+  "appTitle": "ChessTrax",
   "appDescription": "Վերբեռնեք ձեր Lichess PGN-ը: Ստացեք անհատականացված մարզումային պլան՝ սնուցված Gemini-ի կողմից:",
   "lichessUsername": "Lichess օգտանուն",
   "fileUpload": "Ֆայլի վերբեռնում",
@@ -41,7 +41,7 @@
   "clipboardLichessUser": "Lichess օգտանուն: {{user}}",
   "clipboardAnalysisDate": "Վերլուծության ամսաթիվ: {{date}}",
   "clipboardGamePeriod": "Խաղի ընդգրկված ժամանակաշրջան: {{range}}",
-  "clipboardPoweredBy": "Վերլուծությունը սնուցվում է՝ ChessTrax AI Coach՝ օգտագործելով Google Gemini 2.5 Flash: Ոչ մի շարժիչ չի օգտագործվել:",
+  "clipboardPoweredBy": "Վերլուծությունը սնուցվում է՝ ChessTrax AI Coach՝ օգտագործելով Google {{model}}: Ոչ մի շարժիչ չի օգտագործվել:",
   "clipboardPrimaryFocus": "--- ՀԻՄՆԱԿԱՆ ՈՒՇԱԴՐՈՒԹՅՈՒՆ ---",
   "clipboardOpeningAnalysis": "--- ԲԱՑՄԱՆ ՎԵՐԼՈՒԾՈՒԹՅՈՒՆ ---",
   "clipboardAsWhite": "Սպիտակներով:",

@@ -1,6 +1,6 @@
 
 {
-  "appTitle": "ChessTrax KI-Trainer",
+  "appTitle": "ChessTrax",
   "appDescription": "Lade deine Lichess PGN hoch und erhalte deinen persönlichen Trainingsplan, der von Gemini bereitgestellt wird.",
   "lichessUsername": "Lichess-Benutzername",
   "fileUpload": "Datei-Upload",
@@ -42,7 +42,7 @@
   "clipboardLichessUser": "Lichess-Benutzername: {{user}}",
   "clipboardAnalysisDate": "Analysedatum: {{date}}",
   "clipboardGamePeriod": "Partienzeitraum: {{range}}",
-  "clipboardPoweredBy": "Analyse unterst\u00fctzt durch ChessTrax KI-Trainer mit Google Gemini 2.5 Flash. Es wurden keine Engines verwendet.",
+  "clipboardPoweredBy": "Analyse unterstützt durch ChessTrax KI-Trainer mit Google {{model}}. Es wurden keine Engines verwendet.",
   "clipboardPrimaryFocus": "--- HAUPTFOKUS ---",
   "clipboardOpeningAnalysis": "--- ER\u00d6FFNUNGSANALYSE ---",
   "clipboardAsWhite": "Als Wei\u00dfer:",

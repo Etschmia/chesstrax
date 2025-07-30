@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { AnalysisReportData } from './types';
-import { analyzeGames } from './services/geminiService';
+import { analyzeGames, model as geminiModel } from './services/geminiService';
 import { usePgnParser } from './hooks/usePgnParser';
 import FileUpload from './components/FileUpload';
 import AnalysisReport from './components/AnalysisReport';
@@ -164,6 +164,7 @@ const App: React.FC = () => {
               lichessUser={lichessUser}
               gameDateRange={gameDateRange}
               analysisDate={analysisDate}
+              modelName={geminiModel}
             />
           </div>
         )}
