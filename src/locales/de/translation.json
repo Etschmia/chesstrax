@@ -42,7 +42,7 @@
   "clipboardLichessUser": "Lichess-Benutzername: {{user}}",
   "clipboardAnalysisDate": "Analysedatum: {{date}}",
   "clipboardGamePeriod": "Partienzeitraum: {{range}}",
-  "clipboardPoweredBy": "Analyse unterstützt durch ChessTrax KI-Trainer mit Google {{model}}. Es wurden keine Engines verwendet.",
+  "clipboardPoweredBy": "Analyse unterst\u00fctzt durch ChessTrax KI-Trainer mit Google {{model}}. Es wurden keine Engines verwendet.",
   "clipboardPrimaryFocus": "--- HAUPTFOKUS ---",
   "clipboardOpeningAnalysis": "--- ER\u00d6FFNUNGSANALYSE ---",
   "clipboardAsWhite": "Als Wei\u00dfer:",

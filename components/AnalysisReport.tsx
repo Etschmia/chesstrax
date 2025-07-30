@@ -9,6 +9,7 @@ import { BookOpen, Target, BrainCircuit, Shield, Star, ExternalLink, FileDown, C
 interface AnalysisReportProps {
   data: AnalysisReportData;
   lichessUser: string;
+  modelName: string;
   gameDateRange: string;
   analysisDate: Date;
 }
@@ -24,7 +25,7 @@ const TrainingLink: React.FC<{ href: string, children: React.ReactNode }> = ({ h
     </a>
 )
 
-const AnalysisReport: React.FC<AnalysisReportProps> = ({ data, lichessUser, gameDateRange, analysisDate }) => {
+const AnalysisReport: React.FC<AnalysisReportProps> = ({ data, lichessUser, modelName, gameDateRange, analysisDate }) => {
   const { t } = useTranslation();
   const [isDownloadingPdf, setIsDownloadingPdf] = useState(false);
   const [didCopyToClipboard, setDidCopyToClipboard] = useState(false);
@@ -59,9 +60,9 @@ const AnalysisReport: React.FC<AnalysisReportProps> = ({ data, lichessUser, game
         let text = `${t('clipboardReportTitle')}\n`;
         text += `======================================\n\n`;
         text += `${t('clipboardLichessUser', { user: lichessUser })}\n`;
-        text += `${t('clipboardAnalysisDate', { date: analysisDate.toLocaleDateString() })}\n`;
+        text += `${t('clipboardAnalysisDate', { date: analysisDate.toLocaleDateString() })}\n\n`;
         text += `${t('clipboardGamePeriod', { range: gameDateRange })}\n`;
-        text += `${t('clipboardPoweredBy')}\n\n`;
+        text += `${t('clipboardPoweredBy', { model: modelName })}\n\n`;
 
         text += `${t('clipboardPrimaryFocus')}\n${data.summary}\n\n`;
 
@@ -102,7 +103,7 @@ const AnalysisReport: React.FC<AnalysisReportProps> = ({ data, lichessUser, game
                 <p><strong className="text-text-primary">{t('lichessUserLabel')}</strong> {lichessUser}</p>
                 <p><strong className="text-text-primary">{t('analysisDateLabel')}</strong> {analysisDate.toLocaleDateString()}</p>
                 <p><strong className="text-text-primary">{t('gamePeriodLabel')}</strong> {gameDateRange}</p>
-                <p><strong className="text-text-primary">{t('aiModelLabel')}</strong> Gemini 2.5 Flash</p>
+                <p><strong className="text-text-primary">{t('aiModelLabel')}</strong> {modelName}</p>
             </div>
         </div>
 
