@@ -67,7 +67,6 @@ const analysisSchema = {
 export const model = "gemini-2.5-pro";
 
 export const analyzeGames = async (pgnOfLostGames: string, lichessUser: string, language: 'en' | 'de' | 'hy'): Promise<AnalysisReportData> => {
-
   let languageName: string;
   switch (language) {
     case 'de':
@@ -95,28 +94,45 @@ export const analyzeGames = async (pgnOfLostGames: string, lichessUser: string, 
     Provide the analysis in the structured JSON format as requested. Be concise but insightful.
     `;
     
-    try {
-        const response = await ai.models.generateContent({
-            model: model,
-            contents: prompt,
-            config: {
-                responseMimeType: "application/json",
-                responseSchema: analysisSchema,
+    const maxRetries = 3;
+    let attempt = 0;
+
+    while (attempt < maxRetries) {
+        try {
+            const response = await ai.models.generateContent({
+                model: model,
+                contents: prompt,
+                config: {
+                    responseMimeType: "application/json",
+                    responseSchema: analysisSchema,
+                }
+            });
+
+            const jsonText = response.text.trim();
+            // Sometimes the API might wrap the JSON in markdown backticks
+            const cleanJsonText = jsonText.replace(/^```json\n?/, '').replace(/\n?```$/, '');
+            
+            const parsedData: AnalysisReportData = JSON.parse(cleanJsonText);
+            return parsedData;
+
+        } catch (error) {
+            console.error(`Attempt ${attempt + 1} failed:`, error);
+            const isOverloadedError = error instanceof Error && error.message.includes('"code":503');
+
+            if (isOverloadedError && attempt < maxRetries - 1) {
+                const delay = Math.pow(2, attempt) * 1000 + Math.random() * 1000; // Exponential backoff with jitter
+                console.log(`Model is overloaded. Retrying in ${Math.round(delay / 1000)}s...`);
+                await new Promise(res => setTimeout(res, delay));
+                attempt++;
+                continue;
             }
-        });
 
-        const jsonText = response.text.trim();
-        // Sometimes the API might wrap the JSON in markdown backticks
-        const cleanJsonText = jsonText.replace(/^```json\n?/, '').replace(/\n?```$/, '');
-        
-        const parsedData: AnalysisReportData = JSON.parse(cleanJsonText);
-        return parsedData;
-
-    } catch (error) {
-        console.error("Error during Gemini API call or JSON parsing:", error);
-        if (error instanceof Error) {
-            throw new Error(`Failed to get analysis from AI: ${error.message}`);
+            if (error instanceof Error) {
+                throw new Error(`Failed to get analysis from AI: ${error.message}`);
+            }
+            throw new Error("An unknown error occurred while analyzing games.");
         }
-        throw new Error("An unknown error occurred while analyzing games.");
     }
+    // This part should not be reachable if the loop is correct, but for type safety:
+    throw new Error("Failed to get analysis from AI after multiple retries.");
 };
