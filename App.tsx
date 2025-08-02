@@ -10,14 +10,13 @@ import { LayoutGrid, BrainCircuit, Target, Shield, BookOpen, AlertTriangle } fro
 
 const App: React.FC = () => {
   const { t, i18n } = useTranslation();
-  const [lichessUser, setLichessUser] = useState<string>('');
   const [pgnContent, setPgnContent] = useState<string | null>(null);
   const [analysisResult, setAnalysisResult] = useState<AnalysisReportData | null>(null);
   const [analysisDate, setAnalysisDate] = useState<Date | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  const { lostGamesPgn, gameDates } = usePgnParser(pgnContent, lichessUser);
+  const { lostGamesPgn, gameDates, detectedUser } = usePgnParser(pgnContent);
 
   const getGameDateRange = (dates: string[]): string => {
     if (dates.length === 0) return 'N/A';
@@ -37,18 +36,18 @@ const App: React.FC = () => {
     reader.onload = (e) => {
       const text = e.target?.result as string;
       setPgnContent(text);
-      setAnalysisResult(null); 
+      setAnalysisResult(null);
       setError(null);
     };
     reader.onerror = () => {
-        setError(t('error.fileRead'));
+      setError(t('error.fileRead'));
     };
     reader.readAsText(file);
   };
 
   const handleAnalyzeClick = useCallback(async () => {
-    if (!lichessUser || lostGamesPgn.length === 0) {
-      setError(t('error.noUserOrPgn'));
+    if (!detectedUser || lostGamesPgn.length === 0) {
+      setError('Could not detect a user or find any lost games in the PGN file. Please upload a valid PGN file from your Lichess account containing games you have lost.');
       return;
     }
 
@@ -59,7 +58,8 @@ const App: React.FC = () => {
 
     try {
       const gamesToAnalyze = lostGamesPgn.slice(-50).join('\n\n');
-      const result = await analyzeGames(gamesToAnalyze, lichessUser, i18n.language as 'en' | 'de' | 'hy');
+      const result = await analyzeGames(gamesToAnalyze, detectedUser, i18n.language as 'en' | 'de' | 'hy');
+
       setAnalysisResult(result);
       setAnalysisDate(new Date());
     } catch (e) {
@@ -68,7 +68,7 @@ const App: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [lichessUser, lostGamesPgn, i18n.language, t]);
+  }, [detectedUser, lostGamesPgn, i18n.language, t]);
 
   const changeLanguage = (lng: 'en' | 'de' | 'hy') => {
     i18n.changeLanguage(lng);
@@ -87,47 +87,41 @@ const App: React.FC = () => {
               {t('appDescription')}
             </p>
             <div className="flex gap-4 rounded-lg bg-gray-tertiary p-1">
-                <button
-                    onClick={() => changeLanguage('en')}
-                    className={`w-full rounded-md py-2 text-sm font-semibold transition-colors ${i18n.language === 'en' ? 'bg-accent text-gray-primary' : 'text-text-secondary hover:bg-gray-primary/80'}`}
-                >
-                    English
-                </button>
-                <button
-                    onClick={() => changeLanguage('de')}
-                    className={`w-full rounded-md py-2 text-sm font-semibold transition-colors ${i18n.language === 'de' ? 'bg-accent text-gray-primary' : 'text-text-secondary hover:bg-gray-primary/80'}`}
-                >
-                    Deutsch
-                </button>
-                <button
-                    onClick={() => changeLanguage('hy')}
-                    className={`w-full rounded-md py-2 text-sm font-semibold transition-colors ${i18n.language === 'hy' ? 'bg-accent text-gray-primary' : 'text-text-secondary hover:bg-gray-primary/80'}`}
-                >
-                    Հայերեն
-                </button>
+              <button
+                onClick={() => changeLanguage('en')}
+                className={`w-full rounded-md py-2 text-sm font-semibold transition-colors ${i18n.language === 'en' ? 'bg-accent text-gray-primary' : 'text-text-secondary hover:bg-gray-primary/80'}`}
+              >
+                English
+              </button>
+              <button
+                onClick={() => changeLanguage('de')}
+                className={`w-full rounded-md py-2 text-sm font-semibold transition-colors ${i18n.language === 'de' ? 'bg-accent text-gray-primary' : 'text-text-secondary hover:bg-gray-primary/80'}`}
+              >
+                Deutsch
+              </button>
+              <button
+                onClick={() => changeLanguage('hy')}
+                className={`w-full rounded-md py-2 text-sm font-semibold transition-colors ${i18n.language === 'hy' ? 'bg-accent text-gray-primary' : 'text-text-secondary hover:bg-gray-primary/80'}`}
+              >
+                Հայերեն
+              </button>
             </div>
           </div>
         </header>
 
         <div className="max-w-4xl mx-auto bg-gray-secondary p-6 md:p-8 rounded-2xl shadow-2xl border border-gray-tertiary">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-            <div>
-              <label htmlFor="lichessUser" className="block text-sm font-medium text-text-secondary mb-2">{t('lichessUsername')}</label>
-              <input
-                type="text"
-                id="lichessUser"
-                value={lichessUser}
-                onChange={(e) => setLichessUser(e.target.value)}
-                placeholder={t('lichessUsernamePlaceholder')}
-                                className="w-full h-12 bg-gray-tertiary text-text-primary placeholder-text-secondary rounded-lg px-4 py-3 border border-transparent focus:outline-none focus:ring-2 focus:ring-accent"
-              />
-            </div>
+          <div className="mb-6">
             <FileUpload onFileSelect={handleFileSelect} />
+            <p className="text-xs text-text-secondary text-center mt-2">{t('autoUserDetection')}</p>
           </div>
-
+          {pgnContent && !detectedUser && (
+            <p className="text-center text-sm text-yellow-400 mb-4">
+              Could not automatically detect a username. Please ensure the PGN file contains games you played.
+            </p>
+          )}
           <button
             onClick={handleAnalyzeClick}
-            disabled={isLoading || !lichessUser || !pgnContent}
+            disabled={isLoading || !detectedUser || !pgnContent}
             className="w-full flex items-center justify-center gap-3 bg-accent hover:bg-accent-dark text-gray-primary font-bold py-3 px-6 rounded-lg transition-all duration-200 disabled:bg-gray-tertiary disabled:text-text-secondary disabled:cursor-not-allowed"
           >
             {isLoading ? (
@@ -142,44 +136,43 @@ const App: React.FC = () => {
               </>
             )}
           </button>
-          
-          {lostGamesPgn.length > 0 && <p className="text-center text-sm text-text-secondary mt-4">{t('foundGames', { count: lostGamesPgn.length, user: lichessUser, total: gameDates.length })}</p>}
+
+          {detectedUser && lostGamesPgn.length > 0 && <p className="text-center text-sm text-text-secondary mt-4">Detected user '{detectedUser}'. Found {lostGamesPgn.length} lost games to analyze from a total of {gameDates.length} games.</p>}
+          {detectedUser && lostGamesPgn.length === 0 && pgnContent && <p className="text-center text-sm text-yellow-400 mt-4">Detected user '{detectedUser}', but found no lost games in the PGN file.</p>}
 
         </div>
 
         {error && (
-            <div className="max-w-4xl mx-auto mt-8 p-4 bg-red-900/50 border border-red-700 rounded-lg text-red-200 flex items-center gap-3">
-              <AlertTriangle className="h-5 w-5"/>
-              <div>
-                <h3 className="font-bold">{t('analysisFailed')}</h3>
-                <p className="text-sm">{t('analysisFailedDetails', { error })}</p>
-              </div>
+          <div className="max-w-4xl mx-auto mt-8 p-4 bg-red-900/50 border border-red-700 rounded-lg text-red-200 flex items-center gap-3">
+            <AlertTriangle className="h-5 w-5" />
+            <div>
+              <h3 className="font-bold">{t('analysisFailed')}</h3>
+              <p className="text-sm">{t('analysisFailedDetails', { error })}</p>
             </div>
+          </div>
         )}
 
-        {analysisResult && analysisDate && (
+        {analysisResult && analysisDate && detectedUser(
           <div className="mt-12">
-            <AnalysisReport 
-              data={analysisResult} 
-              lichessUser={lichessUser}
+            <AnalysisReport
+              data={analysisResult}
+              lichessUser={detectedUser}
               gameDateRange={gameDateRange}
               analysisDate={analysisDate}
               modelName={geminiModel}
             />
           </div>
         )}
-        
+
         {!isLoading && !analysisResult && !error && (
-            <div className="text-center mt-16 text-text-secondary max-w-2xl mx-auto">
-                 <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-6 text-accent">
-                    <div className="flex flex-col items-center gap-2"><BookOpen size={32}/><span>{t('openings')}</span></div>
-                    <div className="flex flex-col items-center gap-2"><Target size={32}/><span>{t('tactics')}</span></div>
-                    <div className="flex flex-col items-center gap-2"><BrainCircuit size={32}/><span>{t('strategy')}</span></div>
-                    <div className="flex flex-col items-center gap-2"><Shield size={32}/><span>{t('endgames')}</span></div>
-                </div>
-                <h2 className="text-2xl font-semibold text-text-primary mb-2">{t('readyTitle')}</h2>
-                <p>{t('readyDescription')}</p>
+          <div className="text-center mt-16 text-text-secondary max-w-2xl mx-auto">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-6 text-accent">
+              <div className="flex flex-col items-center gap-2"><BookOpen size={32} /><span>{t('openings')}</span></div>
+              <div className="flex flex-col items-center gap-2"><Target size={32} /><span>{t('tactics')}</span></div>
+              <div className="flex flex-col items-center gap-2"><BrainCircuit size={32} /><span>{t('strategy')}</span></div>
+              <div className="flex flex-col items-center gap-2"><Shield size={32} /><span>{t('endgames')}</span></div>
             </div>
+          </div>
         )}
 
       </main>

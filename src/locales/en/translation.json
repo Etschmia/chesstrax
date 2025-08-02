@@ -1,7 +1,8 @@
 
 {
   "appTitle": "ChessTrax",
-  "appDescription": "Upload your Lichess PGN. Get a personalized training plan powered by Gemini.",
+  "appDescription": "Upload a PGN file containing your games. Our AI will automatically detect your username, analyze your losses to find patterns, and create your path to improvement.",
+  "autoUserDetection":"Your Lichess username will be automatically detected from the PGN file.",
   "lichessUsername": "Lichess Username",
   "fileUpload": "File Upload",
   "clickToUpload": "Click to upload",
@@ -12,7 +13,7 @@
   "analysisFailedDetails": "An error occurred during analysis. Please ensure your API key is configured correctly and the PGN is valid. Details: {{error}}",
   "foundGames": "Found {{count}} lost games for '{{user}}' to analyze from a total of {{total}} games.",
   "readyTitle": "Ready to Uncover Your Weaknesses?",
-  "readyDescription": "Provide your Lichess username and upload a PGN file containing your games. Our AI will analyze your losses to find patterns and create your path to improvement.",
+  "readyDescription": "Upload a PGN file containing your games. Our AI will automatically detect your username, analyze your losses to find patterns, and create your path to improvement.",
   "openings": "Openings",
   "tactics": "Tactics",
   "strategy": "Strategy",
