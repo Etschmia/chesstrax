@@ -1,7 +1,7 @@
 
 {
   "appTitle": "ChessTrax",
-  "appDescription": "Upload a PGN file containing your games. Our AI will automatically detect your username, analyze your losses to find patterns, and create your path to improvement.",
+  "appDescription": "Upload a PGN file with your games. Our AI analyzes your lost games to find patterns and create your path to improvement. Your Lichess name will be automatically recognized from the PGN file.",
   "autoUserDetection":"Your Lichess username will be automatically detected from the PGN file.",
   "lichessUsername": "Lichess Username",
   "fileUpload": "File Upload",
