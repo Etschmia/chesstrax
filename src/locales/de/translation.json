@@ -1,7 +1,7 @@
 
 {
   "appTitle": "ChessTrax",
-  "appDescription": "Gib deinen Lichess-Benutzernamen an und lade eine PGN-Datei mit deinen Partien hoch. Unsere KI analysiert deine verlorenen Partien, um Muster zu finden und deinen Weg zur Verbesserung zu erstellen.",
+  "appDescription": "Lade eine PGN-Datei mit deinen Partien hoch. Unsere KI analysiert deine verlorenen Partien, um Muster zu finden und deinen Weg zur Verbesserung zu erstellen. Dein Lichess Name wird automatisch aus der PGN-Datei erkannt.",
   "autoUserDetection":"Dein Lichess Name wird automatisch aus der PGN-Datei erkannt.",
   "lichessUsername": "Lichess-Benutzername",
   "fileUpload": "Datei-Upload",
