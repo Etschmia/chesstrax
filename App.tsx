@@ -152,7 +152,7 @@ const App: React.FC = () => {
           </div>
         )}
 
-        {analysisResult && analysisDate && detectedUser(
+        {analysisResult && analysisDate && detectedUser && (
           <div className="mt-12">
             <AnalysisReport
               data={analysisResult}
