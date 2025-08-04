@@ -17,7 +17,7 @@ export default defineConfig(({ mode }) => {
         }
       },
       server: {  // Neu hinzugefügtes Objekt
-        allowedHosts: ['app.3z5.de']  // Hier deinen Host eintragen; Array für mehrere möglich
+        allowedHosts: ['app.3z5.de','chesstrax-ai-coach.vercel.app']  // Hier deinen Host eintragen; Array für mehrere möglich
       }
     };
 });
