@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { UploadCloud, FileText, X } from 'lucide-react';
 
 interface FileUploadProps {
-  onFileSelect: (file: File) => void;
+  onFileSelect: (file: File | null) => void;
 }
 
 const FileUpload: React.FC<FileUploadProps> = ({ onFileSelect }) => {
@@ -27,11 +27,10 @@ const FileUpload: React.FC<FileUploadProps> = ({ onFileSelect }) => {
   const handleRemoveFile = (e: React.MouseEvent) => {
     e.stopPropagation();
     setFileName(null);
+    onFileSelect(null);
     if(fileInputRef.current) {
         fileInputRef.current.value = "";
     }
-    // You might want to notify parent that file is removed
-    // onFileSelect(null);
   }
 
   return (

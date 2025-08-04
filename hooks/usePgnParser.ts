@@ -1,4 +1,3 @@
-
 import { useMemo } from 'react';
 
 interface PgnParseResult {
@@ -7,18 +6,18 @@ interface PgnParseResult {
     detectedUser: string | null;
 }
 
-export const usePgnParser = (pgnContent: string | null): PgnParseResult => {
-  return useMemo(() => {
-    if (!pgnContent) {
-      return { lostGamesPgn: [], gameDates: [], detectedUser: null };
-    }
+/**
+ * Detects the most frequent user from a PGN string.
+ * This is a pure function and can be called from anywhere.
+ * @param pgnContent The full PGN string.
+ * @returns The detected username or null.
+ */
+export const detectUserFromPgn = (pgnContent: string | null): string | null => {
+    if (!pgnContent) return null;
 
     const games = pgnContent.split(/(?=\[Event ")/).filter(p => p.trim() !== '');
-    if (games.length === 0) {
-        return { lostGamesPgn: [], gameDates: [], detectedUser: null };
-    }
+    if (games.length === 0) return null;
 
-    // Step 1: Find the most frequent user by counting occurrences in White and Black tags.
     const userFrequencies: { [key: string]: number } = {};
     const whiteUserRegex = /\[White "(.*?)"\]/;
     const blackUserRegex = /\[Black "(.*?)"\]/;
@@ -38,16 +37,20 @@ export const usePgnParser = (pgnContent: string | null): PgnParseResult => {
     }
 
     const sortedUsers = Object.entries(userFrequencies).sort((a, b) => b[1] - a[1]);
-    const detectedUser = sortedUsers.length > 0 ? sortedUsers[0][0] : null;
+    return sortedUsers.length > 0 ? sortedUsers[0][0] : null;
+};
 
-    // If no user could be detected, return early.
-    if (!detectedUser) {
-        return { lostGamesPgn: [], gameDates: [], detectedUser: null };
-    }
-
-    // Step 2: Using the detected user, find their lost games and all game dates.
+/**
+ * Finds lost games and all game dates for a specific user from a PGN string.
+ * This is a pure function and can be called from anywhere.
+ * @param pgnContent The full PGN string.
+ * @param user The username to search for.
+ * @returns An object with the user's lost games and all game dates found.
+ */
+export const findUserGames = (pgnContent: string, user: string): { lostGamesPgn: string[], gameDates: string[] } => {
+    const games = pgnContent.split(/(?=\[Event ")/).filter(p => p.trim() !== '');
     const lostGames: string[] = [];
-    const gameDates: string[] = [];
+    const allDates: string[] = [];
     const dateRegex = /\[(UTC)?Date "(.*?)"\]/;
     const resultRegex = /\[Result "(.*?)"\]/;
 
@@ -56,15 +59,12 @@ export const usePgnParser = (pgnContent: string | null): PgnParseResult => {
         const dateMatch = game.match(dateRegex);
         if (dateMatch && dateMatch[2]) {
             // Normalize date to YYYY-MM-DD for consistent parsing
-            gameDates.push(dateMatch[2].replace(/\./g, '-'));
+            allDates.push(dateMatch[2].replace(/\./g, '-'));
         }
 
-        // Check if the detected user played and lost this game
-        const isWhite = new RegExp(`\\[White "${detectedUser}"\\]`, 'i').test(game);
-        const isBlack = new RegExp(`\\[Black "${detectedUser}"\\]`, 'i').test(game);
+        const isWhite = new RegExp(`\\[White "${user}"\\]`, 'i').test(game);
+        const isBlack = new RegExp(`\\[Black "${user}"\\]`, 'i').test(game);
         
-        // This check is important because a user might be the most frequent player,
-        // but a specific game in the PGN might not involve them (e.g., a mixed PGN).
         if (!isWhite && !isBlack) {
             continue;
         }
@@ -77,7 +77,28 @@ export const usePgnParser = (pgnContent: string | null): PgnParseResult => {
             }
         }
     }
+    return { lostGamesPgn: lostGames, gameDates: allDates };
+};
+
+
+/**
+ * A React hook that parses a PGN string to provide reactive data for the UI.
+ * It detects the most frequent user and finds their lost games.
+ * Primarily used for displaying info about a PGN file as it's uploaded.
+ */
+export const usePgnParser = (pgnContent: string | null): PgnParseResult => {
+  return useMemo(() => {
+    if (!pgnContent) {
+      return { lostGamesPgn: [], gameDates: [], detectedUser: null };
+    }
+
+    const detectedUser = detectUserFromPgn(pgnContent);
+    if (!detectedUser) {
+        return { lostGamesPgn: [], gameDates: [], detectedUser: null };
+    }
+
+    const { lostGamesPgn, gameDates } = findUserGames(pgnContent, detectedUser);
     
-    return { lostGamesPgn: lostGames, gameDates, detectedUser };
+    return { lostGamesPgn, gameDates, detectedUser };
   }, [pgnContent]);
 };

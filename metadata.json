@@ -1,5 +1,6 @@
 {
   "name": "ChessTrax",
   "description": "Upload a PGN of your Lichess games and get a personalized chess training plan from an AI coach. The app identifies your lost games, analyzes patterns in your mistakes (tactics, openings, strategy, endgames), and creates a custom plan to help you improve.",
-  "requestFramePermissions": []
+  "requestFramePermissions": [],
+  "prompt": ""
 }
