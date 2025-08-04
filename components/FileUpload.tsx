@@ -1,5 +1,4 @@
-
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, forwardRef, useImperativeHandle } from 'react';
 import { useTranslation } from 'react-i18next';
 import { UploadCloud, FileText, X } from 'lucide-react';
 
@@ -7,16 +6,32 @@ interface FileUploadProps {
   onFileSelect: (file: File | null) => void;
 }
 
-const FileUpload: React.FC<FileUploadProps> = ({ onFileSelect }) => {
+export interface FileUploadRef {
+  clearFile: () => void;
+}
+
+const FileUpload = forwardRef<FileUploadRef, FileUploadProps>(({ onFileSelect }, ref) => {
   const { t } = useTranslation();
   const [fileName, setFileName] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useImperativeHandle(ref, () => ({
+    clearFile: () => {
+      setFileName(null);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    }
+  }));
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       setFileName(file.name);
       onFileSelect(file);
+    } else {
+      setFileName(null);
+      onFileSelect(null);
     }
   };
 
@@ -64,6 +79,6 @@ const FileUpload: React.FC<FileUploadProps> = ({ onFileSelect }) => {
       </div>
     </div>
   );
-};
+});
 
 export default FileUpload;

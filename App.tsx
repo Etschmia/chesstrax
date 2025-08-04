@@ -1,13 +1,13 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { AnalysisReportData } from './types';
 import { analyzeGames, model as geminiModel } from './services/geminiService';
 import { fetchPgnFromLichess } from './services/lichessService';
 import { usePgnParser, detectUserFromPgn, findUserGames } from './hooks/usePgnParser';
-import FileUpload from './components/FileUpload';
+import FileUpload, { FileUploadRef } from './components/FileUpload';
 import AnalysisReport from './components/AnalysisReport';
 import Spinner from './components/Spinner';
-import { LayoutGrid, BrainCircuit, Target, Shield, BookOpen, AlertTriangle, Upload, Download } from 'lucide-react';
+import { LayoutGrid, BrainCircuit, Target, Shield, BookOpen, AlertTriangle } from 'lucide-react';
 
 type DataSource = 'upload' | 'lichess';
 
@@ -27,6 +27,7 @@ const App: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [dataSource, setDataSource] = useState<DataSource>('lichess');
   const [lichessUsername, setLichessUsername] = useState('');
+  const fileUploadRef = useRef<FileUploadRef>(null);
 
   // This hook is now primarily for the UI display before analysis is triggered.
   const { lostGamesPgn, gameDates, detectedUser } = usePgnParser(pgnContent);
@@ -47,6 +48,10 @@ const App: React.FC = () => {
       setPgnContent(null);
       return;
     }
+    // When file is selected, switch source and clear the other input
+    setDataSource('upload');
+    setLichessUsername('');
+
     const reader = new FileReader();
     reader.onload = (e) => {
       const text = e.target?.result as string;
@@ -59,6 +64,19 @@ const App: React.FC = () => {
     };
     reader.readAsText(file);
   };
+  
+  const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const username = e.target.value;
+    setLichessUsername(username);
+
+    // When user types, switch source and clear the other input
+    setDataSource('lichess');
+    if (fileUploadRef.current) {
+        fileUploadRef.current.clearFile();
+    }
+    setPgnContent(null);
+  };
+
 
   const performAnalysis = useCallback(async (pgn: string, user: string) => {
     const { lostGamesPgn, gameDates: parsedGameDates } = findUserGames(pgn, user);
@@ -183,43 +201,45 @@ const App: React.FC = () => {
         </header>
 
         <div className="max-w-4xl mx-auto bg-gray-secondary p-6 md:p-8 rounded-2xl shadow-2xl border border-gray-tertiary">
-          <div className="mb-6">
-              <div className="flex bg-gray-tertiary rounded-lg p-1 mb-4">
-                  <button onClick={() => setDataSource('lichess')} className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-md text-sm font-semibold transition-colors ${dataSource === 'lichess' ? 'bg-accent text-gray-primary' : 'text-text-secondary hover:bg-gray-primary/80'}`}>
-                      <Download size={16}/> {t('fetchFromLichess')}
-                  </button>
-                  <button onClick={() => setDataSource('upload')} className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-md text-sm font-semibold transition-colors ${dataSource === 'upload' ? 'bg-accent text-gray-primary' : 'text-text-secondary hover:bg-gray-primary/80'}`}>
-                      <Upload size={16}/> {t('uploadPgn')}
-                  </button>
-              </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-[1fr,auto,1fr] gap-6 items-start">
+            {/* Lichess Input Group */}
+            <div className="flex flex-col h-full">
+                <div className="flex-grow">
+                    <label className="block text-sm font-medium text-text-secondary mb-2" htmlFor="lichess-user">{t('fetchFromLichess')}</label>
+                    <input
+                        id="lichess-user"
+                        type="text"
+                        value={lichessUsername}
+                        onChange={handleUsernameChange}
+                        placeholder={t('lichessUsernamePlaceholder')}
+                        className="w-full bg-gray-tertiary border-2 border-gray-tertiary focus:border-accent focus:outline-none focus:ring-0 rounded-lg px-4 py-2 text-text-primary"
+                        aria-label={t('lichessUsername')}
+                    />
+                </div>
+                <p className="text-xs text-text-secondary text-center mt-2 flex-shrink-0">{t('fetchingGamesDescription')}</p>
+            </div>
 
-              {dataSource === 'lichess' && (
-                  <div>
-                      <label className="block text-sm font-medium text-text-secondary mb-2" htmlFor="lichess-user">{t('lichessUsername')}</label>
-                      <input
-                          id="lichess-user"
-                          type="text"
-                          value={lichessUsername}
-                          onChange={(e) => setLichessUsername(e.target.value)}
-                          placeholder={t('lichessUsernamePlaceholder')}
-                          className="w-full bg-gray-tertiary border-2 border-gray-tertiary focus:border-accent focus:outline-none focus:ring-0 rounded-lg px-4 py-2 text-text-primary"
-                      />
-                      <p className="text-xs text-text-secondary text-center mt-2">{t('fetchingGamesDescription')}</p>
-                  </div>
-              )}
+            {/* Separator */}
+            <div className="relative flex items-center justify-center my-2 md:h-full">
+                <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-px bg-gray-tertiary md:hidden"></div>
+                <div className="absolute inset-y-0 left-1/2 -translate-x-1/2 w-px bg-gray-tertiary hidden md:block"></div>
+                <span className="relative bg-gray-secondary px-3 text-text-secondary uppercase text-sm font-semibold">{t('or')}</span>
+            </div>
 
-              {dataSource === 'upload' && (
-                  <div>
-                      <FileUpload onFileSelect={handleFileSelect} />
-                      <p className="text-xs text-text-secondary text-center mt-2">{t('autoUserDetection')}</p>
-                  </div>
-              )}
+            {/* PGN Upload Group */}
+            <div className="flex flex-col h-full">
+                <div className="flex-grow">
+                    <FileUpload ref={fileUploadRef} onFileSelect={handleFileSelect} />
+                </div>
+                <p className="text-xs text-text-secondary text-center mt-2 flex-shrink-0">{t('autoUserDetection')}</p>
+            </div>
           </div>
           
           <button
             onClick={handleAnalyzeClick}
             disabled={isAnalyzeButtonDisabled}
-            className="w-full flex items-center justify-center gap-3 bg-accent hover:bg-accent-dark text-gray-primary font-bold py-3 px-6 rounded-lg transition-all duration-200 disabled:bg-gray-tertiary disabled:text-text-secondary disabled:cursor-not-allowed"
+            className="w-full flex items-center justify-center gap-3 bg-accent hover:bg-accent-dark text-gray-primary font-bold py-3 px-6 rounded-lg transition-all duration-200 disabled:bg-gray-tertiary disabled:text-text-secondary disabled:cursor-not-allowed mt-8"
           >
             {isLoading ? (
               <>
@@ -234,8 +254,8 @@ const App: React.FC = () => {
             )}
           </button>
 
-          {detectedUser && lostGamesPgn.length > 0 && <p className="text-center text-sm text-text-secondary mt-4">{t('foundGames', { count: lostGamesPgn.length, total: gameDates.length, user: detectedUser })}</p>}
-          {detectedUser && lostGamesPgn.length === 0 && pgnContent && <p className="text-center text-sm text-yellow-400 mt-4">{t('error.noLostGamesUser', {user: detectedUser})}</p>}
+          {detectedUser && lostGamesPgn.length > 0 && !report && <p className="text-center text-sm text-text-secondary mt-4">{t('foundGames', { count: lostGamesPgn.length, total: gameDates.length, user: detectedUser })}</p>}
+          {detectedUser && lostGamesPgn.length === 0 && pgnContent && !report && <p className="text-center text-sm text-yellow-400 mt-4">{t('error.noLostGamesUser', {user: detectedUser})}</p>}
         </div>
 
         {error && (

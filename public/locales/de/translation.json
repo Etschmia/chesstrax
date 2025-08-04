@@ -65,5 +65,6 @@
   "error.noPgnData": "Keine PGN-Daten zur Analyse vorhanden.",
   "error.userDetectFailed": "Benutzername konnte nicht automatisch aus der PGN-Datei erkannt werden. Bitte stelle sicher, dass es ein g\u00fcltiger Export von deinem Konto ist.",
   "error.noLostGames": "Partien erfolgreich geladen, aber es wurden keine verlorenen Partien zum Analysieren gefunden.",
-  "error.noLostGamesUser": "Benutzer '{{user}}' erkannt, aber keine verlorenen Partien in der PGN-Datei gefunden."
+  "error.noLostGamesUser": "Benutzer '{{user}}' erkannt, aber keine verlorenen Partien in der PGN-Datei gefunden.",
+  "or": "oder"
 }
