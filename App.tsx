@@ -1,3 +1,4 @@
+
 import React, { useState, useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { AnalysisReportData } from './types';
@@ -79,6 +80,18 @@ const App: React.FC = () => {
 
 
   const performAnalysis = useCallback(async (pgn: string, user: string) => {
+    // Fire-and-forget request to log usage on the server-side.
+    // This will show up in the Vercel function logs.
+    fetch('/api/log-usage', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: user }),
+    }).catch(logError => {
+        // We don't want to block the user flow if logging fails.
+        // Log to browser console for client-side debugging.
+        console.warn('Usage logging failed:', logError);
+    });
+
     const { lostGamesPgn, gameDates: parsedGameDates } = findUserGames(pgn, user);
     
     if (lostGamesPgn.length === 0) {
@@ -165,134 +178,94 @@ const App: React.FC = () => {
   
   const isAnalyzeButtonDisabled = isLoading || (dataSource === 'lichess' && !lichessUsername.trim()) || (dataSource === 'upload' && !pgnContent);
 
-  return (
-    <div className="min-h-screen bg-gray-primary font-sans">
-      <main className="container mx-auto px-4 py-8 md:py-12">
-        <header className="text-center mb-10 md:mb-16">
-          <div className="flex items-center justify-center gap-4 mb-2">
-            <LayoutGrid className="h-10 w-10 text-accent" />
-            <h1 className="text-4xl md:text-5xl font-bold text-text-primary tracking-tight">{t('appTitle')}</h1>
-          </div>
-          <div className="flex flex-col md:flex-row items-center justify-center gap-4 mb-10 md:mb-16">
-            <p className="text-lg md:text-xl text-text-secondary max-w-3xl mx-auto text-center md:text-left">
-              {t('appDescription')}
-            </p>
-            <div className="flex gap-4 rounded-lg bg-gray-tertiary p-1">
-              <button
-                onClick={() => changeLanguage('en')}
-                className={`w-full rounded-md px-4 py-2 text-sm font-semibold transition-colors ${i18n.language.startsWith('en') ? 'bg-accent text-gray-primary' : 'text-text-secondary hover:bg-gray-primary/80'}`}
-              >
-                English
-              </button>
-              <button
-                onClick={() => changeLanguage('de')}
-                className={`w-full rounded-md px-4 py-2 text-sm font-semibold transition-colors ${i18n.language.startsWith('de') ? 'bg-accent text-gray-primary' : 'text-text-secondary hover:bg-gray-primary/80'}`}
-              >
-                Deutsch
-              </button>
-              <button
-                onClick={() => changeLanguage('hy')}
-                className={`w-full rounded-md px-4 py-2 text-sm font-semibold transition-colors ${i18n.language.startsWith('hy') ? 'bg-accent text-gray-primary' : 'text-text-secondary hover:bg-gray-primary/80'}`}
-              >
-                Հայերեն
-              </button>
-            </div>
-          </div>
-        </header>
+  const mainContent = () => {
+    if (isLoading) {
+      return (
+        <div className="text-center p-8 bg-gray-secondary rounded-2xl w-full max-w-lg mx-auto flex flex-col items-center justify-center h-64">
+          <Spinner />
+          <p className="mt-4 text-lg font-semibold text-text-primary">{loadingText}</p>
+          {isFetchingPgn && <p className="text-text-secondary text-sm mt-2">{t('fetchingGamesDescription')}</p>}
+        </div>
+      );
+    }
 
-        <div className="max-w-4xl mx-auto bg-gray-secondary p-6 md:p-8 rounded-2xl shadow-2xl border border-gray-tertiary">
-          
-          <div className="grid grid-cols-1 md:grid-cols-[1fr,auto,1fr] gap-6 items-start">
-            {/* Lichess Input Group */}
-            <div className="flex flex-col h-full">
-                <div className="flex-grow">
-                    <label className="block text-sm font-medium text-text-secondary mb-2" htmlFor="lichess-user">{t('fetchFromLichess')}</label>
-                    <input
-                        id="lichess-user"
-                        type="text"
-                        value={lichessUsername}
-                        onChange={handleUsernameChange}
-                        placeholder={t('lichessUsernamePlaceholder')}
-                        className="w-full bg-gray-tertiary border-2 border-gray-tertiary focus:border-accent focus:outline-none focus:ring-0 rounded-lg px-4 py-2 text-text-primary"
-                        aria-label={t('lichessUsername')}
-                    />
-                </div>
-                <p className="text-xs text-text-secondary text-center mt-2 flex-shrink-0">{t('fetchingGamesDescription')}</p>
-            </div>
+    if (report) {
+      return <AnalysisReport data={report.data} lichessUser={report.lichessUser} modelName={geminiModel} gameDateRange={report.gameDateRange} analysisDate={report.analysisDate} />;
+    }
 
-            {/* Separator */}
-            <div className="relative flex items-center justify-center my-2 md:h-full">
-                <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-px bg-gray-tertiary md:hidden"></div>
-                <div className="absolute inset-y-0 left-1/2 -translate-x-1/2 w-px bg-gray-tertiary hidden md:block"></div>
-                <span className="relative bg-gray-secondary px-3 text-text-secondary uppercase text-sm font-semibold">{t('or')}</span>
+    // Default view when no analysis is running or report is available
+    return (
+      <div className="text-center p-8 bg-gray-secondary rounded-2xl w-full max-w-lg mx-auto">
+        <div className="flex justify-center items-center mb-6 gap-4">
+          <BrainCircuit size={40} className="text-accent" />
+          <LayoutGrid size={40} className="text-accent" />
+          <Target size={40} className="text-accent" />
+        </div>
+        <h2 className="text-3xl font-bold text-text-primary mb-2">{t('readyTitle')}</h2>
+        <p className="text-text-secondary mb-6">{t('appDescription')}</p>
+        
+        {error && (
+            <div className="my-4 bg-red-900/50 border border-red-700 text-red-300 px-4 py-3 rounded-lg flex items-start gap-3">
+              <AlertTriangle className="h-5 w-5 mt-0.5 text-red-400" />
+              <span>{error}</span>
             </div>
+        )}
 
-            {/* PGN Upload Group */}
-            <div className="flex flex-col h-full">
-                <div className="flex-grow">
-                    <FileUpload ref={fileUploadRef} onFileSelect={handleFileSelect} />
-                </div>
-                <p className="text-xs text-text-secondary text-center mt-2 flex-shrink-0">{t('autoUserDetection')}</p>
-            </div>
-          </div>
-          
-          <button
-            onClick={handleAnalyzeClick}
-            disabled={isAnalyzeButtonDisabled}
-            className="w-full flex items-center justify-center gap-3 bg-accent hover:bg-accent-dark text-gray-primary font-bold py-3 px-6 rounded-lg transition-all duration-200 disabled:bg-gray-tertiary disabled:text-text-secondary disabled:cursor-not-allowed mt-8"
-          >
-            {isLoading ? (
-              <>
-                <Spinner />
-                {loadingText}
-              </>
-            ) : (
-              <>
-                <BrainCircuit className="h-5 w-5" />
-                {t('analyze')}
-              </>
-            )}
-          </button>
-
-          {detectedUser && lostGamesPgn.length > 0 && !report && <p className="text-center text-sm text-text-secondary mt-4">{t('foundGames', { count: lostGamesPgn.length, total: gameDates.length, user: detectedUser })}</p>}
-          {detectedUser && lostGamesPgn.length === 0 && pgnContent && !report && <p className="text-center text-sm text-yellow-400 mt-4">{t('error.noLostGamesUser', {user: detectedUser})}</p>}
+        {/* Lichess Username Input */}
+        <div>
+          <label htmlFor="lichess-username" className="block text-sm font-medium text-text-secondary mb-2">{t('lichessUsername')}</label>
+          <input
+            type="text"
+            id="lichess-username"
+            value={lichessUsername}
+            onChange={handleUsernameChange}
+            placeholder={t('lichessUsernamePlaceholder')}
+            className="w-full h-12 bg-gray-tertiary border-2 border-gray-tertiary focus:border-accent focus:ring-0 focus:outline-none rounded-lg px-4 text-text-primary placeholder:text-text-secondary/70"
+          />
         </div>
 
-        {error && (
-          <div className="max-w-4xl mx-auto mt-8 p-4 bg-red-900/50 border border-red-700 rounded-lg text-red-200 flex items-center gap-3">
-            <AlertTriangle className="h-5 w-5" />
-            <div>
-              <h3 className="font-bold">{t('analysisFailed')}</h3>
-              <p className="text-sm">{error}</p>
-            </div>
-          </div>
+        <div className="flex items-center my-4">
+            <div className="flex-grow border-t border-gray-tertiary"></div>
+            <span className="flex-shrink mx-4 text-text-secondary uppercase text-xs font-bold">{t('or')}</span>
+            <div className="flex-grow border-t border-gray-tertiary"></div>
+        </div>
+        
+        {/* PGN File Upload */}
+        <FileUpload ref={fileUploadRef} onFileSelect={handleFileSelect} />
+        {dataSource === 'upload' && detectedUser && (
+            <p className="text-sm text-accent mt-2">{t('autoUserDetection')}</p>
         )}
+        
+        <button
+            onClick={handleAnalyzeClick}
+            disabled={isAnalyzeButtonDisabled}
+            className="mt-8 w-full bg-accent hover:bg-accent-dark text-gray-primary font-bold py-3 px-4 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 disabled:bg-gray-tertiary disabled:text-text-secondary disabled:cursor-not-allowed"
+        >
+            {isLoading ? <Spinner /> : <BrainCircuit size={20} />}
+            <span>{loadingText}</span>
+        </button>
+      </div>
+    );
+  };
+  
 
-        {report && (
-          <div className="mt-12">
-            <AnalysisReport
-              data={report.data}
-              lichessUser={report.lichessUser}
-              gameDateRange={report.gameDateRange}
-              analysisDate={report.analysisDate}
-              modelName={geminiModel}
-            />
-          </div>
-        )}
-
-        {!isLoading && !report && !error && (
-          <div className="text-center mt-16 text-text-secondary max-w-2xl mx-auto">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-6 text-accent">
-              <div className="flex flex-col items-center gap-2"><BookOpen size={32} /><span>{t('openings')}</span></div>
-              <div className="flex flex-col items-center gap-2"><Target size={32} /><span>{t('tactics')}</span></div>
-              <div className="flex flex-col items-center gap-2"><BrainCircuit size={32} /><span>{t('strategy')}</span></div>
-              <div className="flex flex-col items-center gap-2"><Shield size={32} /><span>{t('endgames')}</span></div>
-            </div>
-          </div>
-        )}
+  return (
+    <div className="min-h-screen bg-gray-primary flex flex-col items-center justify-center p-4 selection:bg-accent/30">
+      <header className="w-full max-w-5xl mx-auto flex justify-between items-center mb-8 px-4">
+        <h1 className="text-4xl font-bold text-text-primary">
+          Chess<span className="text-accent">Trax</span>
+        </h1>
+        <div className="flex items-center gap-2">
+            <button onClick={() => changeLanguage('en')} className={`px-3 py-1 text-sm rounded-md ${i18n.language.startsWith('en') ? 'bg-accent text-gray-primary font-bold' : 'text-text-secondary'}`}>EN</button>
+            <button onClick={() => changeLanguage('de')} className={`px-3 py-1 text-sm rounded-md ${i18n.language.startsWith('de') ? 'bg-accent text-gray-primary font-bold' : 'text-text-secondary'}`}>DE</button>
+            <button onClick={() => changeLanguage('hy')} className={`px-3 py-1 text-sm rounded-md ${i18n.language.startsWith('hy') ? 'bg-accent text-gray-primary font-bold' : 'text-text-secondary'}`}>HY</button>
+        </div>
+      </header>
+      <main className="w-full max-w-5xl mx-auto">
+        {mainContent()}
       </main>
-      <footer className="text-center py-4 text-text-secondary text-sm">
-        <p>Project homepage: <a href="https://github.com/Etschmia/chesstrax-ai-coach" target="_blank" rel="noopener noreferrer" className="text-accent hover:underline">github.com/Etschmia/chesstrax-ai-coach</a></p>
+      <footer className="w-full max-w-5xl mx-auto text-center mt-8 text-text-secondary text-xs">
+          <p>Analysis powered by Google Gemini. This is not a substitute for professional coaching.</p>
       </footer>
     </div>
   );
