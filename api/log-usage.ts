@@ -38,12 +38,49 @@ export default async function handler(req: VercelRequest, res: ServerResponse) {
         const { username } = req.body || {};
 
         if (typeof username === 'string' && username.trim()) {
-            // This is the key part: logging to standard output.
-            // On Vercel, this will appear in the function's logs.
-            console.log(`[ChessTrax Usage] Analysis requested for user: "${username}"`);
-            
-            res.writeHead(200, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ message: 'Log received successfully.' }));
+            const logData = {
+                message: `[ChessTrax Usage] Analysis requested for user: "${username}"`,
+                username: username,
+                timestamp: new Date().toISOString(),
+            };
+
+            const sourceToken = process.env.BETTERSTACK_SOURCE_TOKEN;
+
+            if (!sourceToken) {
+                console.error('[Usage Log Error] BETTERSTACK_SOURCE_TOKEN is not configured.');
+                // Fallback to console.log if the token is missing
+                console.log(logData.message); 
+                res.writeHead(500, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ error: 'Logging service is not configured.' }));
+                return;
+            }
+
+            try {
+                const response = await fetch('https://in.logs.betterstack.com', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${sourceToken}`,
+                    },
+                    body: JSON.stringify(logData),
+                });
+
+                if (!response.ok) {
+                    // Log the error from BetterStack's response if available
+                    const errorBody = await response.text();
+                    console.error(`[Usage Log Error] Failed to send log to BetterStack. Status: ${response.status}`, errorBody);
+                }
+                
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ message: 'Log received successfully.' }));
+
+            } catch (fetchError) {
+                console.error('[Usage Log Error] Error sending log to BetterStack:', fetchError);
+                // Fallback to console.log if the fetch fails
+                console.log(logData.message);
+                res.writeHead(500, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ error: 'Failed to send log.' }));
+            }
         } else {
             res.writeHead(400, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify({ error: 'Username is required and must be a non-empty string.' }));
