@@ -45,18 +45,19 @@ export default async function handler(req: VercelRequest, res: ServerResponse) {
             };
 
             const sourceToken = process.env.BETTERSTACK_SOURCE_TOKEN;
+            const ingestUrl = process.env.BETTERSTACK_INGEST_URL;
 
-            if (!sourceToken) {
-                console.error('[Usage Log Error] BETTERSTACK_SOURCE_TOKEN is not configured.');
+            if (!sourceToken || !ingestUrl) {
+                console.error('[Usage Log Error] BETTERSTACK_SOURCE_TOKEN or BETTERSTACK_INGEST_URL is not configured.');
                 // Fallback to console.log if the token is missing
-                console.log(logData.message); 
+                console.log(logData.message);
                 res.writeHead(500, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify({ error: 'Logging service is not configured.' }));
                 return;
             }
 
             try {
-                const response = await fetch('https://in.logs.betterstack.com', {
+                const response = await fetch(ingestUrl, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

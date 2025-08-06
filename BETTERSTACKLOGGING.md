@@ -20,10 +20,12 @@
 
 1.  **Vercel-Dashboard öffnen:** Gehe zu den Einstellungen deines `chesstrax-ai-coach`-Projekts auf Vercel.
 2.  **Umgebungsvariable hinzufügen:** Navigiere zum Abschnitt "Environment Variables".
-3.  **Variable erstellen:**
+3.  **Variablen erstellen:**
     *   **Name:** `BETTERSTACK_SOURCE_TOKEN`
     *   **Wert:** Füge den im vorherigen Schritt kopierten "Source token" ein.
-4.  **Speichern:** Stelle sicher, dass die Variable für die Produktionsumgebung (und ggf. Preview/Development) verfügbar ist und speichere die Änderungen.
+    *   **Name:** `BETTERSTACK_INGEST_URL`
+    *   **Wert:** Füge die regionsspezifische Ingest-URL ein, die dir in BetterStack angezeigt wird (z.B. `https://s1469041.eu-nbg-2.betterstackdata.com`).
+4.  **Speichern:** Stelle sicher, dass die Variablen für die Produktionsumgebung (und ggf. Preview/Development) verfügbar sind und speichere die Änderungen.
 
 ---
 
@@ -32,7 +34,7 @@
 1.  **Abhängigkeit prüfen:** Wir werden die eingebaute `fetch`-API von Node.js verwenden, um externe Abhängigkeiten zu vermeiden.
 2.  **Logik anpassen:** Die Datei `/var/www/app/chesstrax-ai-coach/api/log-usage.ts` wird wie folgt modifiziert:
     *   Der `console.log`-Aufruf wird entfernt.
-    *   Stattdessen wird eine `fetch`-Anfrage an den Ingest-Endpunkt von BetterStack (`https://in.logs.betterstack.com`) gesendet.
+    *   Stattdessen wird eine `fetch`-Anfrage an den Ingest-Endpunkt von BetterStack gesendet. Die URL wird aus der Umgebungsvariable `BETTERSTACK_INGEST_URL` gelesen.
     *   Die Log-Nachricht wird als JSON-Payload im Body der Anfrage gesendet.
     *   Der `BETTERSTACK_SOURCE_TOKEN` wird aus den Umgebungsvariablen (`process.env.BETTERSTACK_SOURCE_TOKEN`) gelesen und als `Authorization`-Header (`Bearer <token>`) gesetzt.
     *   Fehlerbehandlung wird hinzugefügt, falls das Senden des Logs fehlschlägt.
