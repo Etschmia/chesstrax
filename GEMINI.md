@@ -19,9 +19,9 @@ Dieses Projekt ist eine Webanwendung, die als KI-gestützter Schachtrainer fungi
 - **Berichte**: Die Ergebnisse werden in einem Analysebericht dargestellt.
 - **Internationalisierung**: Die Benutzeroberfläche ist mehrsprachig (de, en, hy).
 
-### Zukünftige Entwicklung
+### Implementierte Features
 
-- **Lichess-API-Integration**: Es ist geplant, die Partien direkt über die Lichess-API abzurufen, anstatt einen manuellen PGN-Upload zu erfordern.
+- **Lichess-API-Integration**: Die Partien werden direkt über die Lichess-API abgerufen, anstatt einen manuellen PGN-Upload zu erfordern.
 
 ### Wichtige Dateien
 
