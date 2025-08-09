@@ -1,6 +1,6 @@
 # ChessTrax AI Coach
 
-**Entdecke die verborgenen Muster in deinen Schachpartien und verbessere dein Spiel mit der Kraft von Gemini!**
+**Das beste Schach-Lehrbuch, dass es für Dich geben kann, ist eines, das unmittelbar aus Deinen verlorenen Partien entsteht.**
 
 ChessTrax AI Coach ist dein persönlicher Schachtrainer, der deine verlorenen Partien analysiert und dir hilft, die entscheidenden Schwachstellen in deinem Spiel zu erkennen. Gib einfach deinen Lichess-Benutzernamen ein, um deine Partien automatisch zu laden, oder lade eine PGN-Datei hoch. Du erhältst eine detaillierte Auswertung, die dir aufzeigt, wo du dich verbessern kannst.
 
