@@ -121,11 +121,10 @@ export default new GeminiService();
 
 #### 4. Umsetzungsschritte (Roadmap)
 
-1.  **UI-Komponente für Einstellungen**:
-    -   Erstellen einer neuen Komponente `Settings.tsx`.
-    -   Diese Komponente enthält ein Dropdown-Menü zur Auswahl des `LLMProvider` (basierend auf `llmProviders.ts`).
-    -   Für jeden Anbieter wird ein Passwort-Feld zur Eingabe des API-Schlüssels angezeigt.
-    -   Ein "Speichern"-Button persistiert die Auswahl und die Schlüssel im `localStorage` über den `useSettings`-Hook.
+1.  **UI-Fluss für die LLM-Auswahl**:
+    -   Anstelle eines direkten Icons zu den Einstellungen gibt es nun einen Button "LLM ändern".
+    -   **Schritt 1: Bestätigungsdialog (`LLMProviderDialog.tsx`)**: Klickt der Benutzer auf den Button, wird zunächst ein modaler Dialog angezeigt. Dieser Dialog klärt den Benutzer darüber auf, dass er für die Nutzung alternativer Modelle einen eigenen API-Schlüssel benötigt. Er enthält einen wichtigen Datenschutzhinweis, der versichert, dass der Schlüssel nur im Browser gespeichert wird. Der Benutzer kann hier abbrechen (und das kostenlose Standardmodell weiter nutzen) oder bestätigen.
+    -   **Schritt 2: Einstellungs-Panel (`Settings.tsx`)**: Erst nach der Bestätigung wird das eigentliche Einstellungs-Panel geöffnet. Hier kann der Benutzer den Anbieter aus einem Dropdown-Menü auswählen und den entsprechenden API-Schlüssel in ein Passwort-Feld eintragen. Ein "Speichern"-Button persistiert die Auswahl und die Schlüssel im `localStorage` über den `useSettings`-Hook.
 
 2.  **Service-Abstraktion erstellen**:
     -   Die Interfaces `ILLMService` und `AnalysisResult` in `services/llmService.ts` definieren.
@@ -141,3 +140,4 @@ export default new GeminiService();
 #### 5. Sicherheitsbetrachtungen
 
 -   Die Speicherung im `localStorage` ist sicher vor serverseitigem Zugriff, aber für jeden zugänglich, der direkten Zugriff auf den Browser des Benutzers hat (z.B. durch Browser-Erweiterungen oder physischen Zugriff). Dies ist ein akzeptabler Kompromiss für eine clientseitige Anwendung dieser Art. Eine entsprechende Hinweismeldung in der UI ist empfehlenswert.
+*Update:* Die empfohlene Hinweismeldung wurde im Rahmen des Bestätigungsdialogs (`LLMProviderDialog`) umgesetzt.
