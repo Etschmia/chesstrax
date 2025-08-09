@@ -13,6 +13,7 @@ i18n
     debug: true,
     fallbackLng: 'en',
     supportedLngs: ['en', 'de', 'hy'],
+    load: 'languageOnly',
     interpolation: {
       escapeValue: false, // not needed for react as it escapes by default
     },
