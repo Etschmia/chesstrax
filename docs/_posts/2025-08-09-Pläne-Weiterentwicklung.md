@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Willkommen im Blog von chesstrax-ai-coach!"
+title: "Geplante Weiterentwicklungen"
 date: 2025-08-08 10:00:00 +0200
 categories: blog
 ---
