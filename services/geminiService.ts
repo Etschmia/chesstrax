@@ -92,6 +92,10 @@ export const analyzeGames = async (pgnOfLostGames: string, lichessUser: string, 
 
     IMPORTANT: The user has requested the output in ${languageName}. Generate the entire analysis and all text in the final JSON object in ${languageName}.
     Provide the analysis in the structured JSON format as requested. Be concise but insightful.
+
+    **Tone and Formatting Rules:**
+    1. Always address the user with the informal German "Du". Use a friendly and encouraging tone.
+    2. When you list example games, you MUST precede the list with the keyword "GameId". For example: "... (e.g., GameId abcdefgh, ijklmnop)".
     `;
     
     const maxRetries = 3;

@@ -4,6 +4,7 @@ import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import type { AnalysisReportData } from '../types';
 import ReportCard from './ReportCard';
+import { Linkify } from './Linkify';
 import { BookOpen, Target, BrainCircuit, Shield, Star, ExternalLink, FileDown, Clipboard, Check } from 'lucide-react';
 
 interface AnalysisReportProps {
@@ -108,8 +109,8 @@ const AnalysisReport: React.FC<AnalysisReportProps> = ({ data, lichessUser, mode
         </div>
 
         <div className="space-y-8">
-            <ReportCard icon={Star} title={t('primaryFocus')}>
-                <p className="text-text-secondary">{data.summary}</p>
+            <ReportCard icon={Star} title={t('primaryFocus')}> 
+                <p className="text-text-secondary"><Linkify text={data.summary} /></p>
             </ReportCard>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -117,11 +118,11 @@ const AnalysisReport: React.FC<AnalysisReportProps> = ({ data, lichessUser, mode
                 <div className='space-y-4'>
                     <div>
                         <h4 className="font-bold text-text-primary mb-1">{t('asWhite')}</h4>
-                        <p className="text-text-secondary">{data.openingAnalysis.asWhite}</p>
+                        <p className="text-text-secondary"><Linkify text={data.openingAnalysis.asWhite} /></p>
                     </div>
                      <div>
                         <h4 className="font-bold text-text-primary mb-1">{t('asBlack')}</h4>
-                        <p className="text-text-secondary">{data.openingAnalysis.asBlack}</p>
+                        <p className="text-text-secondary"><Linkify text={data.openingAnalysis.asBlack} /></p>
                     </div>
                     <TrainingLink href="https://lichess.org/opening">{t('exploreOpenings')}</TrainingLink>
                 </div>
@@ -132,7 +133,7 @@ const AnalysisReport: React.FC<AnalysisReportProps> = ({ data, lichessUser, mode
                 {data.tacticalMotifs.map((motif, index) => (
                   <li key={index}>
                     <h4 className="font-bold text-text-primary">{motif.motif}</h4>
-                    <p className="text-text-secondary mb-2">{motif.explanation}</p>
+                    <p className="text-text-secondary mb-2"><Linkify text={motif.explanation} /></p>
                     <TrainingLink href={`https://lichess.org/training/themes`}>{t('practiceTactics')}</TrainingLink>
                   </li>
                 ))}
@@ -144,7 +145,7 @@ const AnalysisReport: React.FC<AnalysisReportProps> = ({ data, lichessUser, mode
                 {data.strategicWeaknesses.map((weakness, index) => (
                   <li key={index}>
                     <h4 className="font-bold text-text-primary">{weakness.weakness}</h4>
-                    <p className="text-text-secondary">{weakness.explanation}</p>
+                    <p className="text-text-secondary"><Linkify text={weakness.explanation} /></p>
                   </li>
                 ))}
               </ul>
@@ -155,7 +156,7 @@ const AnalysisReport: React.FC<AnalysisReportProps> = ({ data, lichessUser, mode
                 {data.endgamePractice.map((endgame, index) => (
                   <li key={index}>
                     <h4 className="font-bold text-text-primary">{endgame.endgameType}</h4>
-                    <p className="text-text-secondary mb-2">{endgame.explanation}</p>
+                    <p className="text-text-secondary mb-2"><Linkify text={endgame.explanation} /></p>
                      <TrainingLink href="https://lichess.org/practice">{t('trainEndgames')}</TrainingLink>
                   </li>
                 ))}
