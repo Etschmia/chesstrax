@@ -14,14 +14,12 @@ Dieses Projekt ist eine Webanwendung, die als KI-gestützter Schachtrainer fungi
 
 ### Kernfunktionen
 
+- **Lichess-API-Integration**: Die Partien werden direkt über die Lichess-API abgerufen, anstatt einen manuellen PGN-Upload zu erfordern.
 - **PGN-Upload**: Benutzer können ihre von Lichess exportierten PGN-Dateien hochladen.
 - **Analyse**: Die Anwendung sendet die Spieldaten an die Gemini-API, um taktische, strategische und eröffnungsspezifische Fehler zu identifizieren.
 - **Berichte**: Die Ergebnisse werden in einem Analysebericht dargestellt.
 - **Internationalisierung**: Die Benutzeroberfläche ist mehrsprachig (de, en, hy).
 
-### Implementierte Features
-
-- **Lichess-API-Integration**: Die Partien werden direkt über die Lichess-API abgerufen, anstatt einen manuellen PGN-Upload zu erfordern.
 
 ### Wichtige Dateien
 

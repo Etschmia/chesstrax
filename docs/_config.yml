@@ -1,4 +1,4 @@
 title: chesstrax-ai-coach Blog
 description: Mein Blog für Schachanalysen und Verbesserungen mit KI.
-theme: minima
+theme: jekyll-theme-minimal
 baseurl: "/chesstrax-ai-coach/blog"
