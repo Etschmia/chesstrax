@@ -13,6 +13,7 @@ import FileUpload, { FileUploadRef } from './components/FileUpload';
 import AnalysisReport from './components/AnalysisReport';
 import Spinner from './components/Spinner';
 import Settings from './components/Settings';
+import LLMProviderDialog from './components/LLMProviderDialog';
 import { LayoutGrid, BrainCircuit, Target, Settings as SettingsIcon, X, AlertTriangle } from 'lucide-react';
 
 type DataSource = 'upload' | 'lichess';
@@ -41,7 +42,8 @@ const App: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [dataSource, setDataSource] = useState<DataSource>('lichess');
   const [lichessUsername, setLichessUsername] = useState('');
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isSettingsPanelOpen, setIsSettingsPanelOpen] = useState(false);
+  const [isLlmDialogOpen, setIsLlmDialogOpen] = useState(false);
   const fileUploadRef = useRef<FileUploadRef>(null);
 
   const { lostGamesPgn, gameDates, detectedUser } = usePgnParser(pgnContent);
@@ -92,14 +94,14 @@ const App: React.FC = () => {
     const selectedProviderId = settings.selectedProviderId;
     if (!selectedProviderId) {
       setError("Please select an AI provider in the settings.");
-      setIsSettingsOpen(true);
+      setIsSettingsPanelOpen(true);
       return;
     }
 
     const apiKey = settings.apiKeys[selectedProviderId];
     if (!apiKey) {
       setError(`API key for ${providers.find(p => p.id === selectedProviderId)?.name} is missing. Please add it in the settings.`);
-      setIsSettingsOpen(true);
+      setIsSettingsPanelOpen(true);
       return;
     }
 
@@ -147,7 +149,7 @@ const App: React.FC = () => {
     } finally {
       setIsAnalyzing(false);
     }
-  }, [i18n.language, t, settings]);
+  }, [i18n.language, t, settings, providers]);
 
   const handleAnalyzeClick = useCallback(async () => {
     setError(null);
@@ -189,6 +191,11 @@ const App: React.FC = () => {
   
   const changeLanguage = (lng: 'en' | 'de' | 'hy') => {
     i18n.changeLanguage(lng);
+  };
+
+  const handleLlmDialogConfirm = () => {
+    setIsLlmDialogOpen(false);
+    setIsSettingsPanelOpen(true);
   };
   
   const isLoading = isFetchingPgn || isAnalyzing;
@@ -270,10 +277,16 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-primary flex flex-col items-center justify-center p-4 selection:bg-accent/30">
-      {isSettingsOpen && (
+      <LLMProviderDialog 
+        isOpen={isLlmDialogOpen} 
+        onClose={() => setIsLlmDialogOpen(false)} 
+        onConfirm={handleLlmDialogConfirm} 
+      />
+
+      {isSettingsPanelOpen && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 flex items-center justify-center">
           <div className="bg-gray-secondary p-6 rounded-2xl shadow-2xl border border-gray-tertiary w-full max-w-md relative">
-            <button onClick={() => setIsSettingsOpen(false)} className="absolute top-3 right-3 text-text-secondary hover:text-text-primary">
+            <button onClick={() => setIsSettingsPanelOpen(false)} className="absolute top-3 right-3 text-text-secondary hover:text-text-primary">
               <X size={24} />
             </button>
             <Settings />
@@ -285,12 +298,12 @@ const App: React.FC = () => {
         <h1 className="text-4xl font-bold text-text-primary">
           Chess<span className="text-accent">Trax</span>
         </h1>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-4">
             <button onClick={() => changeLanguage('en')} className={`px-3 py-1 text-sm rounded-md ${i18n.language.startsWith('en') ? 'bg-accent text-gray-primary font-bold' : 'text-text-secondary'}`}>EN</button>
             <button onClick={() => changeLanguage('de')} className={`px-3 py-1 text-sm rounded-md ${i18n.language.startsWith('de') ? 'bg-accent text-gray-primary font-bold' : 'text-text-secondary'}`}>DE</button>
             <button onClick={() => changeLanguage('hy')} className={`px-3 py-1 text-sm rounded-md ${i18n.language.startsWith('hy') ? 'bg-accent text-gray-primary font-bold' : 'text-text-secondary'}`}>HY</button>
-            <button onClick={() => setIsSettingsOpen(true)} className="p-2 text-text-secondary hover:text-accent transition-colors">
-              <SettingsIcon size={20} />
+            <button onClick={() => setIsLlmDialogOpen(true)} className="px-3 py-1 text-sm rounded-md text-text-secondary hover:text-accent transition-colors">
+              {t('changeLlm')}
             </button>
         </div>
       </header>

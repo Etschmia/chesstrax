@@ -66,5 +66,12 @@
   "error.userDetectFailed": "Benutzername konnte nicht automatisch aus der PGN-Datei erkannt werden. Bitte stelle sicher, dass es ein g\u00fcltiger Export von deinem Konto ist.",
   "error.noLostGames": "Partien erfolgreich geladen, aber es wurden keine verlorenen Partien zum Analysieren gefunden.",
   "error.noLostGamesUser": "Benutzer '{{user}}' erkannt, aber keine verlorenen Partien in der PGN-Datei gefunden.",
-  "or": "oder"
+  "or": "oder",
+  "changeLlm": "LLM ändern",
+  "llmDialog.title": "Externen LLM-Anbieter nutzen",
+  "llmDialog.description": "Sie können einen anderen Anbieter für die Spielanalyse auswählen. Dafür ist Ihr eigener API-Schlüssel für den jeweiligen Dienst erforderlich.",
+  "llmDialog.privacyTitle": "Ihre Privatsphäre ist uns wichtig",
+  "llmDialog.privacyDescription": "Ihr API-Schlüssel wird sicher in Ihrem Browser gespeichert und niemals an unsere Server gesendet. Er wird direkt vom Browser an die API des von Ihnen gewählten Anbieters übermittelt.",
+  "llmDialog.cancel": "Abbrechen & Gemini nutzen",
+  "llmDialog.confirm": "Verstanden & Fortfahren"
 }
