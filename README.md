@@ -22,7 +22,7 @@ ChessTrax AI Coach ist dein persönlicher Schachtrainer, der deine verlorenen Pa
 ### Kernfunktionen, Stand heute:
 
 - **Lichess-API-Integration**: Die Partien werden direkt über die Lichess-API abgerufen, anstatt einen manuellen PGN-Upload zu erfordern. Es werden die letzten 2000 Partien abgerufen und von denen die Verlustpartien ausgewertet
-- **PGN-Upload**: Benutzer können ihre (z.B. von Lichess exportierten) PGN-Dateien hochladen. Hier ist keine Begrenzung eingebaut. Bedenke: das Ganze läuft in Deinem Browser. 
+- **PGN-Upload**: Benutzer können ihre (z.B. von Lichess exportierten) PGN-Dateien hochladen. (Dein Spielername wird dadurch ermittelt, dass er an jedem Spiel beteiligt ist.) Hier ist keine Begrenzung eingebaut. Bedenke: das Ganze läuft in Deinem Browser, Dein System setzt die Grenzen... 
 - **Analyse**: Die Anwendung sendet die Spieldaten an die Gemini-API, um taktische, strategische und eröffnungsspezifische Fehler zu identifizieren. Es wird der Hauptfokus gezeigt, den Du beim Schachtraining befolgen solltest, und dann geht es im Detail um die als wiederkehrendes Muster erkannten Schwächen als Weiß- und Schwarzspieler, welche Eröffnungsthemen hast Du, welche strategischen Schwächen kennzeichnen Dein Spiel, welche taktischen Motive übersiehst Du häufig, worauf solltest Du im Endspieltraining achten.
 - **Berichte**: Die Ergebnisse werden in einem Analysebericht dargestellt, den man sich auch als PDF oder Googel Doc exportieren kann.
 - **Internationalisierung**: Die Benutzeroberfläche ist mehrsprachig (de, en, hy).
