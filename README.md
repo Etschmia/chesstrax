@@ -21,8 +21,8 @@ ChessTrax AI Coach ist dein persönlicher Schachtrainer, der deine verlorenen Pa
 
 ### Kernfunktionen
 
-- **Flexibel bei der Wahl der KI**: Du kannst frei wählen, welches der unterstützten Large Language Models (LLMs) wie **Google Gemini** oder **OpenAI GPT** du für die Analyse nutzen möchtest.
-- **Nutzung eigener API-Keys**: Fortgeschrittene Nutzer können ihre eigenen API-Schlüssel für die LLMs hinterlegen. Die Schlüssel werden **sicher und ausschließlich in deinem Browser** gespeichert und verlassen niemals deinen Client. Das ermöglicht dir den Zugriff auf leistungsfähigere oder aktuellere Modelle, die über das kostenlose Kontingent hinausgehen.
+- **Hochwertige Analyse mit Google Gemini**: Die Standardanalyse wird vom Modell **Gemini 2.5 Flash** durchgeführt. Dieses Modell ist extrem schnell und liefert qualitativ hochwertige und tiefgehende Einblicke in deine Partien. Für die allermeisten Nutzer ist diese Analyse völlig ausreichend und der empfohlene Weg.
+- **(Optional) Experimentiere mit deinem eigenen LLM**: Für technisch versierte Nutzer und Experimentierfreudige gibt es die Möglichkeit, einen eigenen API-Schlüssel für ein anderes unterstütztes Modell (z.B. OpenAI GPT, Anthropic Claude, xAI Grok) zu hinterlegen. Dies ist **keine Notwendigkeit**, sondern ein Zusatzangebot für alle, die bereits eigene LLMs nutzen und diese mit ChessTrax ausprobieren möchten. Dein Schlüssel wird dabei **sicher und ausschließlich in deinem Browser** gespeichert.
 - **Lichess-API-Integration**: Die Partien werden direkt über die Lichess-API abgerufen. Es werden die letzten 2000 Partien abgerufen und von denen die Verlustpartien ausgewertet.
 - **PGN-Upload**: Benutzer können ihre (z.B. von Lichess exportierten) PGN-Dateien hochladen.
 - **Detaillierte Analyse**: Die KI identifiziert wiederkehrende Muster in deinen Partien – von Eröffnungsschwächen über taktische Blindstellen bis hin zu strategischen Fehlkonzepten.
@@ -34,7 +34,7 @@ Den Rohbau und die ersten Versionen dieser App habe ich komplett mit [AI Studio]
 ### Nächste Feature Implementierungen:
 
 - **Gewichtung nach Aktualität**: Fehler, die du früher gemacht hast, die aber in letzter Zeit in vergleichbarer Stellung nicht mehr vorkamen, sollen nicht mehr in die Analyse einfliessen. (Naja, vielleicht mache ich einen Motivationsblock an den Schluss der Analye, der Deine Fortschritte würdigt)
-- **Unterstützung weiterer LLMs**: Die Architektur ist darauf ausgelegt, zukünftig einfach weitere Modelle wie z.B. Anthropic Claude oder andere leistungsstarke KIs zu integrieren.
+- **Unterstützung weiterer LLMs**: Die Architektur ist darauf ausgelegt, zukünftig einfach weitere Modelle zu integrieren.
 
 ---
 
@@ -50,7 +50,7 @@ Den Rohbau und die ersten Versionen dieser App habe ich komplett mit [AI Studio]
     ```bash
     npm run dev
     ```
-Die Anwendung nutzt standardmäßig ein von mir bereitgestelltes, kostenloses Kontingent des Gemini-Modells. Wenn du ein anderes LLM mit deinem eigenen API-Schlüssel verwenden möchtest, kannst du dies direkt in den Einstellungen der Anwendung im Browser tun. Es ist keine `.env.local`-Datei mehr nötig.
+Die Anwendung nutzt standardmäßig das leistungsstarke Gemini 2.5 Flash Modell über ein von mir bereitgestelltes Kontingent. Es ist keine weitere Konfiguration nötig. Wenn du dennoch ein anderes LLM mit deinem eigenen API-Schlüssel verwenden möchtest, kannst du dies direkt in den Einstellungen der Anwendung im Browser tun.
 
 **Live-Demo:** Du kannst die Anwendung hier live testen: [https://chesstrax-ai-coach.vercel.app/](https://chesstrax-ai-coach.vercel.app/)
 
