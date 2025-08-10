@@ -19,12 +19,14 @@ ChessTrax AI Coach ist dein persönlicher Schachtrainer, der deine verlorenen Pa
 
 **Beginne noch heute, deine schachlichen Schwächen in Stärken zu verwandeln!**
 
-### Kernfunktionen, Stand heute:
+### Kernfunktionen
 
-- **Lichess-API-Integration**: Die Partien werden direkt über die Lichess-API abgerufen, anstatt einen manuellen PGN-Upload zu erfordern. Es werden die letzten 2000 Partien abgerufen und von denen die Verlustpartien ausgewertet
-- **PGN-Upload**: Benutzer können ihre (z.B. von Lichess exportierten) PGN-Dateien hochladen. (Dein Spielername wird dadurch ermittelt, dass er an jedem Spiel beteiligt ist.) Hier ist keine Begrenzung eingebaut. Bedenke: das Ganze läuft in Deinem Browser, Dein System setzt die Grenzen... 
-- **Analyse**: Die Anwendung sendet die Spieldaten an die Gemini-API, um taktische, strategische und eröffnungsspezifische Fehler zu identifizieren. Es wird der Hauptfokus gezeigt, den Du beim Schachtraining befolgen solltest, und dann geht es im Detail um die als wiederkehrendes Muster erkannten Schwächen als Weiß- und Schwarzspieler, welche Eröffnungsthemen hast Du, welche strategischen Schwächen kennzeichnen Dein Spiel, welche taktischen Motive übersiehst Du häufig, worauf solltest Du im Endspieltraining achten.
-- **Berichte**: Die Ergebnisse werden in einem Analysebericht dargestellt, den man sich auch als PDF oder Googel Doc exportieren kann.
+- **Flexibel bei der Wahl der KI**: Du kannst frei wählen, welches der unterstützten Large Language Models (LLMs) wie **Google Gemini** oder **OpenAI GPT** du für die Analyse nutzen möchtest.
+- **Nutzung eigener API-Keys**: Fortgeschrittene Nutzer können ihre eigenen API-Schlüssel für die LLMs hinterlegen. Die Schlüssel werden **sicher und ausschließlich in deinem Browser** gespeichert und verlassen niemals deinen Client. Das ermöglicht dir den Zugriff auf leistungsfähigere oder aktuellere Modelle, die über das kostenlose Kontingent hinausgehen.
+- **Lichess-API-Integration**: Die Partien werden direkt über die Lichess-API abgerufen. Es werden die letzten 2000 Partien abgerufen und von denen die Verlustpartien ausgewertet.
+- **PGN-Upload**: Benutzer können ihre (z.B. von Lichess exportierten) PGN-Dateien hochladen.
+- **Detaillierte Analyse**: Die KI identifiziert wiederkehrende Muster in deinen Partien – von Eröffnungsschwächen über taktische Blindstellen bis hin zu strategischen Fehlkonzepten.
+- **Berichte**: Die Ergebnisse werden in einem Analysebericht dargestellt, den du als PDF exportieren kannst.
 - **Internationalisierung**: Die Benutzeroberfläche ist mehrsprachig (de, en, hy).
 
 Den Rohbau und die ersten Versionen dieser App habe ich komplett mit [AI Studio](https://aistudio.google.com/) erstellt. Das Wesentliche, was von mir an KnowHow einfloss, liegt unter der Haube: Die Art und Weise, der KI (hier: Gemini) den zu analysierenden Content zu unterbreiten und vor Allem im gezielten Formulieren und Hinterlegen des vorbereiteten Prompts.
@@ -32,10 +34,7 @@ Den Rohbau und die ersten Versionen dieser App habe ich komplett mit [AI Studio]
 ### Nächste Feature Implementierungen:
 
 - **Gewichtung nach Aktualität**: Fehler, die du früher gemacht hast, die aber in letzter Zeit in vergleichbarer Stellung nicht mehr vorkamen, sollen nicht mehr in die Analyse einfliessen. (Naja, vielleicht mache ich einen Motivationsblock an den Schluss der Analye, der Deine Fortschritte würdigt)
-- **Tiefere Analysen mit Deep Search**: Im Moment nutzt die App einen API KEY von mir mit einem kostenlosen Kontingent bei Gemini. Im Augenblick reicht das auch aus, weil sich die Zahl der Abrufe durch Nutzer recht überschaubar hält. Ich will aber auch einen API KEY einbauen, der Zugriff auf noch tiefere, ausführliche Analysen ermöglicht. Der würde bei mir Kosten verursachen, diesen Part kann ich also nicht kostenlos anbieten. Hier bin ich noch am Ausprobieren, wieviele Tokens eine Analyse dann so verbraucht. Noch ist mir nicht klar wie ich hier zu einer transparenten Preisbildung komme. Ich will daraus kein Geschäft machen, aber Kosten muss ich decken.
-Bis dahin kannst Du aber Folgendes machen: Wenn du einen bezahlten API KEY von Gemini hast dann checke hier die Quellen aus, baue ihn bei Dir ein und ändere das Model auf PRO.
-#### Ergänzung: 
-Ich werde recht bald schon eine Version haben mit einem Feature, das fortgeschrittenen Nutzern erlaubt, ihr LLM selbst auszuwählen (Gemini, OpenAI, Claude, Grok, ...)! Allerdings müssen sie dann ihren eigenen API KEY haben, den können sie dann eintragen - der Key verbleibt im Browser des Nutzers, er kommt nicht auf den Server. Und wenn der Key dann eine Version repräsentiert die den Nutzer abrechnet, dann kann er natürlich die teuersten Features des jeweiligen LLM nutzen, das ist dann seine Rechnung, nicht meine. Ich glaub so mach ich's. So komm ich drum herum mich hier um Zahlungsfunktionen kümmern zu müssen 
+- **Unterstützung weiterer LLMs**: Die Architektur ist darauf ausgelegt, zukünftig einfach weitere Modelle wie z.B. Anthropic Claude oder andere leistungsstarke KIs zu integrieren.
 
 ---
 
@@ -47,13 +46,14 @@ Ich werde recht bald schon eine Version haben mit einem Feature, das fortgeschri
     ```bash
     npm install
     ```
-2.  **Gemini API Key setzen:** Erstelle eine `.env.local`-Datei und setze deinen Gemini API Key:
-    ```
-    GEMINI_API_KEY=DEIN_API_KEY
-    ```
-3.  **Anwendung starten:**
+2.  **Anwendung starten:**
     ```bash
     npm run dev
     ```
+Die Anwendung nutzt standardmäßig ein von mir bereitgestelltes, kostenloses Kontingent des Gemini-Modells. Wenn du ein anderes LLM mit deinem eigenen API-Schlüssel verwenden möchtest, kannst du dies direkt in den Einstellungen der Anwendung im Browser tun. Es ist keine `.env.local`-Datei mehr nötig.
 
 **Live-Demo:** Du kannst die Anwendung hier live testen: [https://chesstrax-ai-coach.vercel.app/](https://chesstrax-ai-coach.vercel.app/)
+
+---
+
+**Hinweis:** Dieses Projekt ist ein Hobbyprojekt und befindet sich in aktiver Entwicklung. Feedback und Beiträge sind willkommen!
