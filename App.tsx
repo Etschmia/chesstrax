@@ -7,6 +7,7 @@ import { usePgnParser, detectUserFromPgn, findUserGames } from './hooks/usePgnPa
 import useSettings from './hooks/useSettings';
 import geminiService from './services/geminiService';
 import openAIService from './services/openAIService'; // Placeholder
+import grokService from './services/grokService'; // Placeholder
 import { ILLMService } from './services/llmService';
 
 import FileUpload, { FileUploadRef } from './components/FileUpload';
@@ -29,6 +30,7 @@ interface Report {
 const services: Record<string, ILLMService> = {
   gemini: geminiService,
   openai: openAIService,
+  grok: grokService,
 };
 
 const App: React.FC = () => {

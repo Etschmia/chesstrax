@@ -73,5 +73,11 @@
   "llmDialog.privacyTitle": "Your Privacy Matters",
   "llmDialog.privacyDescription": "Your API key is stored securely in your browser and is never sent to our servers. It is transmitted directly from your browser to the API of the provider you choose.",
   "llmDialog.cancel": "Cancel & Use Gemini",
-  "llmDialog.confirm": "Acknowledge & Continue"
+  "llmDialog.confirm": "Acknowledge & Continue",
+  "settings.title": "LLM Settings",
+  "settings.aiProvider": "AI Provider",
+  "settings.apiKeyPlaceholder": "Enter your {{providerName}} key",
+  "settings.findApiKeyLink": "How to find your API key?",
+  "settings.saved": "Saved!",
+  "settings.save": "Save Settings"
 }

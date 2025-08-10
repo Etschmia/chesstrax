@@ -73,5 +73,11 @@
   "llmDialog.privacyTitle": "Ihre Privatsphäre ist uns wichtig",
   "llmDialog.privacyDescription": "Ihr API-Schlüssel wird sicher in Ihrem Browser gespeichert und niemals an unsere Server gesendet. Er wird direkt vom Browser an die API des von Ihnen gewählten Anbieters übermittelt.",
   "llmDialog.cancel": "Abbrechen & Gemini nutzen",
-  "llmDialog.confirm": "Verstanden & Fortfahren"
+  "llmDialog.confirm": "Verstanden & Fortfahren",
+  "settings.title": "LLM-Einstellungen",
+  "settings.aiProvider": "KI-Anbieter",
+  "settings.apiKeyPlaceholder": "Gib deinen {{providerName}} API-Schlüssel ein",
+  "settings.findApiKeyLink": "Wo finde ich meinen API-Schlüssel?",
+  "settings.saved": "Gespeichert!",
+  "settings.save": "Einstellungen speichern"
 }
