@@ -66,5 +66,12 @@
   "error.userDetectFailed": "Could not automatically detect a username from the PGN file. Please make sure it's a valid export from your account.",
   "error.noLostGames": "Successfully fetched games, but could not find any losses to analyze.",
   "error.noLostGamesUser": "Detected user '{{user}}', but found no lost games in the PGN file.",
-  "or": "or"
+  "or": "or",
+  "changeLlm": "Change LLM",
+  "llmDialog.title": "Use External LLM Provider",
+  "llmDialog.description": "You can choose a different provider for the game analysis. This requires your own API key for the respective service.",
+  "llmDialog.privacyTitle": "Your Privacy Matters",
+  "llmDialog.privacyDescription": "Your API key is stored securely in your browser and is never sent to our servers. It is transmitted directly from your browser to the API of the provider you choose.",
+  "llmDialog.cancel": "Cancel & Use Gemini",
+  "llmDialog.confirm": "Acknowledge & Continue"
 }
