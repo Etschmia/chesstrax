@@ -26,11 +26,10 @@ export const providers: LLMProvider[] = [
     apiKeyName: 'xAI API Key',
     documentationUrl: 'https://x.ai/',
   },
-  // Zukünftige Modelle können hier einfach hinzugefügt werden
-  // {
-  //   id: 'anthropic',
-  //   name: 'Anthropic Claude 3',
-  //   apiKeyName: 'Anthropic API Key',
-  //   documentationUrl: '...',
-  // },
+  {
+    id: 'anthropic',
+    name: 'Anthropic Claude 3',
+    apiKeyName: 'Anthropic API Key',
+    documentationUrl: 'https://docs.anthropic.com/claude/reference/getting-started-with-the-api',
+  },
 ];

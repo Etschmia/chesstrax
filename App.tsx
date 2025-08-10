@@ -8,6 +8,7 @@ import useSettings from './hooks/useSettings';
 import geminiService from './services/geminiService';
 import openAIService from './services/openAIService'; // Placeholder
 import grokService from './services/grokService'; // Placeholder
+import anthropicService from './services/anthropicService'; // Placeholder
 import { ILLMService } from './services/llmService';
 
 import FileUpload, { FileUploadRef } from './components/FileUpload';
@@ -31,6 +32,7 @@ const services: Record<string, ILLMService> = {
   gemini: geminiService,
   openai: openAIService,
   grok: grokService,
+  anthropic: anthropicService,
 };
 
 const App: React.FC = () => {
