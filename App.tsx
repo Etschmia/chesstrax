@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { AnalysisReportData } from './types';
@@ -95,30 +94,38 @@ const App: React.FC = () => {
   };
 
   const performAnalysis = useCallback(async (pgn: string, user: string) => {
-    const selectedProviderId = settings.selectedProviderId || 'gemini';
-    if (!selectedProviderId) {
-      setError("Please select an AI provider in the settings.");
-      setIsSettingsPanelOpen(true);
-      return;
+    let service: ILLMService;
+    let apiKey: string;
+    let providerId: string;
+
+    if (settings.selectedProviderId && settings.apiKeys[settings.selectedProviderId]) {
+      // User has selected a provider and entered a key
+      providerId = settings.selectedProviderId;
+      apiKey = settings.apiKeys[providerId];
+      service = services[providerId];
+    } else {
+      // Default to Gemini with environment variable
+      providerId = 'gemini';
+      apiKey = process.env.GEMINI_API_KEY || '';
+      service = geminiService;
     }
 
-    const apiKey = settings.apiKeys[selectedProviderId];
     if (!apiKey) {
-      setError(`API key for ${providers.find(p => p.id === selectedProviderId)?.name} is missing. Please add it in the settings.`);
+      const providerName = providers.find(p => p.id === providerId)?.name || providerId;
+      setError(`API key for ${providerName} is missing. Please add it in the settings.`);
       setIsSettingsPanelOpen(true);
       return;
     }
 
-    const service = services[selectedProviderId];
     if (!service) {
-      setError(`No service available for provider: ${selectedProviderId}`);
+      setError(`No service available for provider: ${providerId}`);
       return;
     }
 
     fetch('/api/log-usage', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username: user, provider: selectedProviderId }),
+      body: JSON.stringify({ username: user, provider: providerId }),
     }).catch(logError => console.warn('Usage logging failed:', logError));
 
     const { lostGamesPgn, gameDates: parsedGameDates } = findUserGames(pgn, user);

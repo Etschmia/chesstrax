@@ -9,12 +9,6 @@ export interface LLMProvider {
 
 export const providers: LLMProvider[] = [
   {
-    id: 'gemini',
-    name: 'Google Gemini',
-    apiKeyName: 'Gemini API Key',
-    documentationUrl: 'https://ai.google.dev/tutorials/setup',
-  },
-  {
     id: 'openai',
     name: 'OpenAI GPT-4',
     apiKeyName: 'OpenAI API Key',
