@@ -95,7 +95,7 @@ const App: React.FC = () => {
   };
 
   const performAnalysis = useCallback(async (pgn: string, user: string) => {
-    const selectedProviderId = settings.selectedProviderId;
+    const selectedProviderId = settings.selectedProviderId || 'gemini';
     if (!selectedProviderId) {
       setError("Please select an AI provider in the settings.");
       setIsSettingsPanelOpen(true);

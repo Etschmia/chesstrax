@@ -19,7 +19,12 @@ const useSettings = () => {
     // Default settings
     return {
       selectedProviderId: 'gemini',
-      apiKeys: { gemini: '', openai: '', anthropic: '' },
+      apiKeys: {
+        gemini: import.meta.env.VITE_GEMINI_API_KEY || '',
+        openai: '',
+        anthropic: '',
+        grok: ''
+      },
     };
   });
 
