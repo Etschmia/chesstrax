@@ -15,8 +15,10 @@ import AnalysisReport from './components/AnalysisReport';
 import Spinner from './components/Spinner';
 import Settings from './components/Settings';
 import LLMProviderDialog from './components/LLMProviderDialog';
+import HelpDialog from './components/HelpDialog';
+import AboutDialog from './components/AboutDialog';
 import ApiKeyManager from './ApiKeyManager';
-import { LayoutGrid, BrainCircuit, Target, Settings as SettingsIcon, X, AlertTriangle, KeyRound } from 'lucide-react';
+import { LayoutGrid, BrainCircuit, Target, Settings as SettingsIcon, X, AlertTriangle, KeyRound, HelpCircle, Info } from 'lucide-react';
 
 type DataSource = 'upload' | 'lichess';
 
@@ -50,6 +52,8 @@ const App: React.FC = () => {
   const [isSettingsPanelOpen, setIsSettingsPanelOpen] = useState(false);
   const [isApiKeyPanelOpen, setIsApiKeyPanelOpen] = useState(false);
   const [isLlmDialogOpen, setIsLlmDialogOpen] = useState(false);
+  const [isHelpDialogOpen, setIsHelpDialogOpen] = useState(false);
+  const [isAboutDialogOpen, setIsAboutDialogOpen] = useState(false);
   const fileUploadRef = useRef<FileUploadRef>(null);
 
   const { lostGamesPgn, gameDates, detectedUser } = usePgnParser(pgnContent);
@@ -309,6 +313,16 @@ const App: React.FC = () => {
         onConfirm={handleLlmDialogConfirm} 
       />
 
+      <HelpDialog 
+        isOpen={isHelpDialogOpen}
+        onClose={() => setIsHelpDialogOpen(false)}
+      />
+
+      <AboutDialog 
+        isOpen={isAboutDialogOpen}
+        onClose={() => setIsAboutDialogOpen(false)}
+      />
+
       {isSettingsPanelOpen && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 flex items-center justify-center">
           <div className="bg-gray-secondary p-6 rounded-2xl shadow-2xl border border-gray-tertiary w-full max-w-md relative">
@@ -344,6 +358,12 @@ const App: React.FC = () => {
             </button>
             <button onClick={() => setIsLlmDialogOpen(true)} className="px-3 py-1 text-sm rounded-md text-text-secondary hover:text-accent transition-colors">
               {t('changeLlm')}
+            </button>
+            <button onClick={() => setIsHelpDialogOpen(true)} title={t('help')} className="p-2 text-text-secondary hover:text-accent transition-colors">
+              <HelpCircle size={20} />
+            </button>
+            <button onClick={() => setIsAboutDialogOpen(true)} title={t('about')} className="p-2 text-text-secondary hover:text-accent transition-colors">
+              <Info size={20} />
             </button>
         </div>
       </header>

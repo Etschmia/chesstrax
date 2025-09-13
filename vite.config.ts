@@ -6,10 +6,22 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, '.', '');
+    
+    // Get current date and time for build info
+    const buildDate = new Date().toISOString().split('T')[0];
+    const buildTime = new Date().toTimeString().split(' ')[0];
+    
+    // Read version from package.json
+    const packageJson = require('./package.json');
+    const version = packageJson.version;
+    
     return {
       define: {
         'process.env.API_KEY': JSON.stringify(env.GEMINI_API_KEY),
-        'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY)
+        'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY),
+        '__APP_VERSION__': JSON.stringify(version),
+        '__BUILD_DATE__': JSON.stringify(buildDate),
+        '__BUILD_TIME__': JSON.stringify(buildTime)
       },
       resolve: {
         alias: {
