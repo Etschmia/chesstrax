@@ -61,13 +61,30 @@ const analysisSchema = {
 export const model = "gemini-2.5-flash";
 
 class GeminiService implements ILLMService {
+  private getApiKey(apiKey?: string): string {
+    // 1. Try the API key provided by the user in the settings
+    if (apiKey) return apiKey;
+
+    // 2. Try to get the API key from localStorage (for user-provided keys)
+    const userApiKey = localStorage.getItem('userGeminiApiKey');
+    if (userApiKey) return userApiKey;
+
+    // 3. Fallback to the environment variable (for the developer's key)
+    const envApiKey = process.env.GEMINI_API_KEY;
+    if (envApiKey) return envApiKey;
+
+    // If no key is found, throw an error
+    throw new Error("Gemini API key is not configured. Please add it in the settings.");
+  }
+
   public async analyzeGames(
     pgnOfLostGames: string,
-    apiKey: string,
+    apiKey: string, // This can be from settings, might be empty
     lichessUser: string,
     language: 'en' | 'de' | 'hy'
   ): Promise<AnalysisReportData> {
-    const ai = new GoogleGenAI({ apiKey });
+    const finalApiKey = this.getApiKey(apiKey);
+    const ai = new GoogleGenAI({ apiKey: finalApiKey });
 
     let languageName: string;
     switch (language) {

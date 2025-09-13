@@ -15,9 +15,11 @@ import AnalysisReport from './components/AnalysisReport';
 import Spinner from './components/Spinner';
 import Settings from './components/Settings';
 import LLMProviderDialog from './components/LLMProviderDialog';
-import { LayoutGrid, BrainCircuit, Target, Settings as SettingsIcon, X, AlertTriangle } from 'lucide-react';
+import ApiKeyManager from './ApiKeyManager';
+import { LayoutGrid, BrainCircuit, Target, Settings as SettingsIcon, X, AlertTriangle, KeyRound } from 'lucide-react';
 
 type DataSource = 'upload' | 'lichess';
+
 
 interface Report {
   data: AnalysisReportData;
@@ -46,6 +48,7 @@ const App: React.FC = () => {
   const [dataSource, setDataSource] = useState<DataSource>('lichess');
   const [lichessUsername, setLichessUsername] = useState('');
   const [isSettingsPanelOpen, setIsSettingsPanelOpen] = useState(false);
+  const [isApiKeyPanelOpen, setIsApiKeyPanelOpen] = useState(false);
   const [isLlmDialogOpen, setIsLlmDialogOpen] = useState(false);
   const fileUploadRef = useRef<FileUploadRef>(null);
 
@@ -95,25 +98,37 @@ const App: React.FC = () => {
 
   const performAnalysis = useCallback(async (pgn: string, user: string) => {
     let service: ILLMService;
-    let apiKey: string;
+    let apiKey: string | undefined = undefined; // Start with undefined
     let providerId: string;
 
-    if (settings.selectedProviderId && settings.apiKeys[settings.selectedProviderId]) {
-      // User has selected a provider and entered a key
+    // 1. Check for user-provided Gemini key in localStorage first
+    const userGeminiApiKey = localStorage.getItem('userGeminiApiKey');
+    if (userGeminiApiKey) {
+        providerId = 'gemini';
+        apiKey = userGeminiApiKey;
+        service = geminiService;
+    } else if (settings.selectedProviderId && settings.apiKeys[settings.selectedProviderId]) {
+      // 2. Use the key from the general settings if available
       providerId = settings.selectedProviderId;
       apiKey = settings.apiKeys[providerId];
       service = services[providerId];
     } else {
-      // Default to Gemini with environment variable
+      // 3. Default to Gemini with environment variable as a last resort
       providerId = 'gemini';
-      apiKey = process.env.GEMINI_API_KEY || '';
+      apiKey = process.env.GEMINI_API_KEY || ''; // Fallback to env var
       service = geminiService;
     }
 
     if (!apiKey) {
       const providerName = providers.find(p => p.id === providerId)?.name || providerId;
-      setError(`API key for ${providerName} is missing. Please add it in the settings.`);
-      setIsSettingsPanelOpen(true);
+      // Make the error message more specific
+      if (providerId === 'gemini' && !userGeminiApiKey) {
+         setError(`API key for ${providerName} is missing. Please add your own key using the key icon in the header.`);
+         setIsApiKeyPanelOpen(true);
+      } else {
+        setError(`API key for ${providerName} is missing. Please add it in the settings.`);
+        setIsSettingsPanelOpen(true);
+      }
       return;
     }
 
@@ -305,6 +320,17 @@ const App: React.FC = () => {
         </div>
       )}
 
+      {isApiKeyPanelOpen && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 flex items-center justify-center">
+          <div className="bg-gray-secondary p-6 rounded-2xl shadow-2xl border border-gray-tertiary w-full max-w-md relative">
+            <button onClick={() => setIsApiKeyPanelOpen(false)} className="absolute top-3 right-3 text-text-secondary hover:text-text-primary">
+              <X size={24} />
+            </button>
+            <ApiKeyManager />
+          </div>
+        </div>
+      )}
+
       <header className="w-full max-w-5xl mx-auto flex justify-between items-center mb-8 px-4">
         <h1 className="text-4xl font-bold text-text-primary">
           Chess<span className="text-accent">Trax</span>
@@ -313,6 +339,9 @@ const App: React.FC = () => {
             <button onClick={() => changeLanguage('en')} className={`px-3 py-1 text-sm rounded-md ${i18n.language.startsWith('en') ? 'bg-accent text-gray-primary font-bold' : 'text-text-secondary'}`}>EN</button>
             <button onClick={() => changeLanguage('de')} className={`px-3 py-1 text-sm rounded-md ${i18n.language.startsWith('de') ? 'bg-accent text-gray-primary font-bold' : 'text-text-secondary'}`}>DE</button>
             <button onClick={() => changeLanguage('hy')} className={`px-3 py-1 text-sm rounded-md ${i18n.language.startsWith('hy') ? 'bg-accent text-gray-primary font-bold' : 'text-text-secondary'}`}>HY</button>
+            <button onClick={() => setIsApiKeyPanelOpen(true)} title={t('apiKeySettings')} className="p-2 text-text-secondary hover:text-accent transition-colors">
+              <KeyRound size={20} />
+            </button>
             <button onClick={() => setIsLlmDialogOpen(true)} className="px-3 py-1 text-sm rounded-md text-text-secondary hover:text-accent transition-colors">
               {t('changeLlm')}
             </button>
