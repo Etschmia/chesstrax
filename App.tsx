@@ -4,7 +4,7 @@ import type { AnalysisReportData } from './types';
 import { fetchPgnFromLichess } from './services/lichessService';
 import { usePgnParser, detectUserFromPgn, findUserGames } from './hooks/usePgnParser';
 import useSettings from './hooks/useSettings';
-import { ServiceFactory } from './services/serviceFactory';
+import { ServiceFactory } from './services/serviceFactory.js';
 
 import FileUpload, { FileUploadRef } from './components/FileUpload';
 import Spinner from './components/Spinner';
