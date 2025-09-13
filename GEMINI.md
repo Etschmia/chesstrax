@@ -19,11 +19,13 @@ Dieses Projekt ist eine Webanwendung, die als KI-gestützter Schachtrainer fungi
 - **Analyse**: Die Anwendung sendet die Spieldaten an die Gemini-API, um taktische, strategische und eröffnungsspezifische Fehler zu identifizieren.
 - **Berichte**: Die Ergebnisse werden in einem Analysebericht dargestellt.
 - **Internationalisierung**: Die Benutzeroberfläche ist mehrsprachig (de, en, hy).
+- **Eigener API-Schlüssel**: Benutzer können ihren eigenen Gemini-API-Schlüssel in der Anwendung hinterlegen. Dieser wird lokal im Browser gespeichert und für die Analyse verwendet, anstatt auf den Standard-Schlüssel des Entwicklers zurückzugreifen.
 
 
 ### Wichtige Dateien
 
 - `App.tsx`: Hauptkomponente der React-Anwendung.
+- `ApiKeyManager.tsx`: Komponente zur Verwaltung des benutzerdefinierten API-Schlüssels.
 - `package.json`: Definiert Skripte und Abhängigkeiten.
 - `services/geminiService.ts`: Enthält die Logik für die Interaktion mit der Gemini-API.
 - `hooks/usePgnParser.ts`: Ein React-Hook zur Verarbeitung von PGN-Daten.

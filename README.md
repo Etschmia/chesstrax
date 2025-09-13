@@ -23,6 +23,7 @@ ChessTrax AI Coach ist dein persönlicher Schachtrainer, der deine verlorenen Pa
 
 - **Hochwertige Analyse mit Google Gemini**: Die Standardanalyse wird vom Modell **Gemini 2.5 Flash** durchgeführt. Dieses Modell ist extrem schnell und liefert qualitativ hochwertige und tiefgehende Einblicke in deine Partien. Für die allermeisten Nutzer ist diese Analyse völlig ausreichend und der empfohlene Weg.
 - **(Optional) Experimentiere mit deinem eigenen LLM**: Für technisch versierte Nutzer und Experimentierfreudige gibt es die Möglichkeit, einen eigenen API-Schlüssel für ein anderes unterstütztes Modell (z.B. OpenAI GPT, Anthropic Claude, xAI Grok) zu hinterlegen. Dies ist **keine Notwendigkeit**, sondern ein Zusatzangebot für alle, die bereits eigene LLMs nutzen und diese mit ChessTrax ausprobieren möchten. Dein Schlüssel wird dabei **sicher und ausschließlich in deinem Browser** gespeichert.
+- **Eigener Gemini API-Schlüssel**: Um eine übermäßige Nutzung des von mir bereitgestellten API-Schlüssels zu vermeiden, kannst du deinen eigenen, kostenlosen Gemini-API-Schlüssel von [Google AI Studio](https://aistudio.google.com/) hinterlegen. Klicke dazu einfach auf das Schlüssel-Symbol in der Kopfzeile der Anwendung. Dein Schlüssel wird sicher und nur in deinem Browser gespeichert.
 - **Lichess-API-Integration**: Die Partien werden direkt über die Lichess-API abgerufen. Es werden die letzten 2000 Partien abgerufen und von denen die Verlustpartien ausgewertet.
 - **PGN-Upload**: Benutzer können ihre (z.B. von Lichess exportierten) PGN-Dateien hochladen.
 - **Detaillierte Analyse**: Die KI identifiziert wiederkehrende Muster in deinen Partien – von Eröffnungsschwächen über taktische Blindstellen bis hin zu strategischen Fehlkonzepten.
@@ -57,3 +58,8 @@ Die Anwendung nutzt standardmäßig das leistungsstarke Gemini 2.5 Flash Modell 
 ---
 
 **Hinweis:** Dieses Projekt ist ein Hobbyprojekt und befindet sich in aktiver Entwicklung. Feedback und Beiträge sind willkommen!
+
+---
+## Lizenz
+
+Dieses Projekt steht unter der BSD-3-Clause-Lizenz. Die Details findest du in der [LICENSE](LICENSE)-Datei.
