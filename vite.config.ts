@@ -23,6 +23,21 @@ export default defineConfig(({ mode }) => {
         '__BUILD_DATE__': JSON.stringify(buildDate),
         '__BUILD_TIME__': JSON.stringify(buildTime)
       },
+      build: {
+        rollupOptions: {
+          output: {
+            manualChunks: {
+              // Vendor chunks
+              'react-vendor': ['react', 'react-dom'],
+              'ui-vendor': ['lucide-react'],
+              'i18n-vendor': ['i18next', 'react-i18next', 'i18next-browser-languagedetector', 'i18next-http-backend'],
+              
+              // Core LLM communication libraries (but not service implementations)
+              'http-vendor': ['axios'],
+            }
+          }
+        }
+      },
       resolve: {
         alias: {
           '@': path.resolve(__dirname, '.'),

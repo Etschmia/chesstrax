@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
 import type { AnalysisReportData } from '../types';
 import ReportCard from './ReportCard';
 import { Linkify } from './Linkify';
@@ -37,6 +35,12 @@ const AnalysisReport: React.FC<AnalysisReportProps> = ({ data, lichessUser, mode
 
     setIsDownloadingPdf(true);
     try {
+      // Dynamically import PDF generation libraries
+      const [{ default: html2canvas }, { default: jsPDF }] = await Promise.all([
+        import('html2canvas'),
+        import('jspdf')
+      ]);
+      
       const canvas = await html2canvas(reportElement, {
         scale: 2, // Higher scale for better quality
         backgroundColor: '#262421', // Match the primary background color

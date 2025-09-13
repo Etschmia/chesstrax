@@ -1,23 +1,21 @@
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useCallback, useRef, Suspense, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { AnalysisReportData } from './types';
 import { fetchPgnFromLichess } from './services/lichessService';
 import { usePgnParser, detectUserFromPgn, findUserGames } from './hooks/usePgnParser';
 import useSettings from './hooks/useSettings';
-import geminiService from './services/geminiService';
-import openAIService from './services/openAIService'; // Placeholder
-import grokService from './services/grokService'; // Placeholder
-import anthropicService from './services/anthropicService'; // Placeholder
-import { ILLMService } from './services/llmService';
+import { ServiceFactory } from './services/serviceFactory';
 
 import FileUpload, { FileUploadRef } from './components/FileUpload';
-import AnalysisReport from './components/AnalysisReport';
 import Spinner from './components/Spinner';
-import Settings from './components/Settings';
-import LLMProviderDialog from './components/LLMProviderDialog';
-import HelpDialog from './components/HelpDialog';
-import AboutDialog from './components/AboutDialog';
 import ApiKeyManager from './ApiKeyManager';
+
+// Lazy load heavy components
+const AnalysisReport = React.lazy(() => import('./components/AnalysisReport'));
+const Settings = React.lazy(() => import('./components/Settings'));
+const LLMProviderDialog = React.lazy(() => import('./components/LLMProviderDialog'));
+const HelpDialog = React.lazy(() => import('./components/HelpDialog'));
+const AboutDialog = React.lazy(() => import('./components/AboutDialog'));
 import { LayoutGrid, BrainCircuit, Target, Settings as SettingsIcon, X, AlertTriangle, KeyRound, HelpCircle, Info } from 'lucide-react';
 
 type DataSource = 'upload' | 'lichess';
@@ -30,13 +28,13 @@ interface Report {
   analysisDate: Date;
 }
 
-// Map services to provider IDs
-const services: Record<string, ILLMService> = {
-  gemini: geminiService,
-  openai: openAIService,
-  grok: grokService,
-  anthropic: anthropicService,
-};
+// Map services to provider IDs - services are now loaded dynamically
+// const services: Record<string, ILLMService> = {
+//   gemini: geminiService,
+//   openai: openAIService,
+//   grok: grokService,
+//   anthropic: anthropicService,
+// };
 
 const App: React.FC = () => {
   const { t, i18n } = useTranslation();
@@ -57,6 +55,13 @@ const App: React.FC = () => {
   const fileUploadRef = useRef<FileUploadRef>(null);
 
   const { lostGamesPgn, gameDates, detectedUser } = usePgnParser(pgnContent);
+
+  // Preload the default Gemini service on component mount
+  useEffect(() => {
+    ServiceFactory.preloadService('gemini').catch(() => {
+      // Silently fail, service will be loaded when needed
+    });
+  }, []);
 
   const getGameDateRange = (dates: string[]): string => {
     if (dates.length === 0) return 'N/A';
@@ -101,7 +106,6 @@ const App: React.FC = () => {
   };
 
   const performAnalysis = useCallback(async (pgn: string, user: string) => {
-    let service: ILLMService;
     let apiKey: string | undefined = undefined; // Start with undefined
     let providerId: string;
 
@@ -110,17 +114,14 @@ const App: React.FC = () => {
     if (userGeminiApiKey) {
         providerId = 'gemini';
         apiKey = userGeminiApiKey;
-        service = geminiService;
-    } else if (settings.selectedProviderId && settings.apiKeys[settings.selectedProviderId]) {
+    } else if (settings.selectedProviderId && settings.apiKeys[settings.selectedProviderId as keyof typeof settings.apiKeys]) {
       // 2. Use the key from the general settings if available
       providerId = settings.selectedProviderId;
-      apiKey = settings.apiKeys[providerId];
-      service = services[providerId];
+      apiKey = settings.apiKeys[settings.selectedProviderId as keyof typeof settings.apiKeys];
     } else {
       // 3. Default to Gemini with environment variable as a last resort
       providerId = 'gemini';
       apiKey = process.env.GEMINI_API_KEY || ''; // Fallback to env var
-      service = geminiService;
     }
 
     if (!apiKey) {
@@ -136,8 +137,12 @@ const App: React.FC = () => {
       return;
     }
 
-    if (!service) {
-      setError(`No service available for provider: ${providerId}`);
+    // Load the service dynamically
+    let service;
+    try {
+      service = await ServiceFactory.getService(providerId);
+    } catch (error) {
+      setError(`Failed to load service for ${providerId}: ${error instanceof Error ? error.message : 'Unknown error'}`);
       return;
     }
 
@@ -249,7 +254,11 @@ const App: React.FC = () => {
     }
 
     if (report) {
-      return <AnalysisReport data={report.data} lichessUser={report.lichessUser} modelName={selectedProviderName} gameDateRange={report.gameDateRange} analysisDate={report.analysisDate} />;
+      return (
+        <Suspense fallback={<div className="text-center p-8"><Spinner /><p className="mt-4 text-lg font-semibold text-text-primary">{t('loadingReport')}</p></div>}>
+          <AnalysisReport data={report.data} lichessUser={report.lichessUser} modelName={selectedProviderName} gameDateRange={report.gameDateRange} analysisDate={report.analysisDate} />
+        </Suspense>
+      );
     }
 
     return (
@@ -307,21 +316,27 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-primary flex flex-col items-center justify-center p-4 selection:bg-accent/30">
-      <LLMProviderDialog 
-        isOpen={isLlmDialogOpen} 
-        onClose={() => setIsLlmDialogOpen(false)} 
-        onConfirm={handleLlmDialogConfirm} 
-      />
+      <Suspense fallback={null}>
+        <LLMProviderDialog 
+          isOpen={isLlmDialogOpen} 
+          onClose={() => setIsLlmDialogOpen(false)} 
+          onConfirm={handleLlmDialogConfirm} 
+        />
+      </Suspense>
 
-      <HelpDialog 
-        isOpen={isHelpDialogOpen}
-        onClose={() => setIsHelpDialogOpen(false)}
-      />
+      <Suspense fallback={null}>
+        <HelpDialog 
+          isOpen={isHelpDialogOpen}
+          onClose={() => setIsHelpDialogOpen(false)}
+        />
+      </Suspense>
 
-      <AboutDialog 
-        isOpen={isAboutDialogOpen}
-        onClose={() => setIsAboutDialogOpen(false)}
-      />
+      <Suspense fallback={null}>
+        <AboutDialog 
+          isOpen={isAboutDialogOpen}
+          onClose={() => setIsAboutDialogOpen(false)}
+        />
+      </Suspense>
 
       {isSettingsPanelOpen && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 flex items-center justify-center">
@@ -329,7 +344,9 @@ const App: React.FC = () => {
             <button onClick={() => setIsSettingsPanelOpen(false)} className="absolute top-3 right-3 text-text-secondary hover:text-text-primary">
               <X size={24} />
             </button>
-            <Settings />
+            <Suspense fallback={<div className="text-center p-4"><Spinner /></div>}>
+              <Settings />
+            </Suspense>
           </div>
         </div>
       )}

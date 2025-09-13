@@ -9,6 +9,7 @@
   "language": "Sprache",
   "analyze": "Meinen Trainingsplan erstellen",
   "analyzing": "Analysiere deine Partien...",
+  "loadingReport": "Lade Bericht...",
   "analysisFailed": "Analyse fehlgeschlagen",
   "analysisFailedDetails": "W\u00e4hrend der Analyse ist ein Fehler aufgetreten: {{error}}",
   "foundGames": "{{count}} verlorene Partien f\u00fcr '{{user}}' gefunden (von {{total}} insgesamt)",

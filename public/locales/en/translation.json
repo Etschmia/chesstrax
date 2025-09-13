@@ -9,6 +9,7 @@
   "language": "Language",
   "analyze": "Create My Training Plan",
   "analyzing": "Analyzing Your Games...",
+  "loadingReport": "Loading report...",
   "analysisFailed": "Analysis Failed",
   "analysisFailedDetails": "An error occurred during analysis: {{error}}",
   "foundGames": "Found {{count}} lost games for '{{user}}' to analyze (from a total of {{total}} games).",
