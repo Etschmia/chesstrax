@@ -1,4 +1,4 @@
-# ChessTrax AI Coach
+# ChessTrax
 
 **Das beste Schach-Lehrbuch, dass es für Dich geben kann, ist eines, das unmittelbar aus Deinen verlorenen Partien entsteht.**
 
@@ -53,7 +53,7 @@ Den Rohbau und die ersten Versionen dieser App habe ich komplett mit [AI Studio]
     ```
 Die Anwendung nutzt standardmäßig das leistungsstarke Gemini 2.5 Flash Modell über ein von mir bereitgestelltes Kontingent. Es ist keine weitere Konfiguration nötig. Wenn du dennoch ein anderes LLM mit deinem eigenen API-Schlüssel verwenden möchtest, kannst du dies direkt in den Einstellungen der Anwendung im Browser tun.
 
-**Live-Demo:** Du kannst die Anwendung hier live testen: [https://chesstrax-ai-coach.vercel.app/](https://chesstrax-ai-coach.vercel.app/)
+**Live-Demo:** Du kannst die Anwendung hier live testen: [https://chesstrax.vercel.app/](https://chesstrax.vercel.app/)
 
 ---
 
@@ -62,4 +62,4 @@ Die Anwendung nutzt standardmäßig das leistungsstarke Gemini 2.5 Flash Modell 
 ---
 ## Lizenz
 
-Dieses Projekt steht unter der BSD-3-Clause-Lizenz. Die Details findest du in der [LICENSE](LICENSE)-Datei.
+Dieses Projekt steht unter der GPL-v3-Lizenz. Die Details findest du in der [LICENSE](LICENSE)-Datei.
