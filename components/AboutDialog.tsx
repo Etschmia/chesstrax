@@ -49,7 +49,7 @@ const AboutDialog: React.FC<AboutDialogProps> = ({ isOpen, onClose }) => {
             <div className="text-center space-y-4">
               <div>
                 <h3 className="text-3xl font-bold text-text-primary mb-2">
-                  Chess<span className="text-accent">Trax</span> AI Coach
+                  Chess<span className="text-accent">Trax</span>
                 </h3>
                 <p className="text-text-secondary text-lg">
                   {t('appDescription')}

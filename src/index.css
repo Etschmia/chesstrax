@@ -1,3 +1,194 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Print Styling System */
+@media print {
+  :root {
+    --print-bg-primary: #ffffff;
+    --print-bg-secondary: #f8f9fa;
+    --print-bg-tertiary: #e9ecef;
+    --print-text-primary: #212529;
+    --print-text-secondary: #6c757d;
+    --print-accent: #0d6efd;
+    --print-border: #dee2e6;
+  }
+
+  /* Global print styles */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  body {
+    background: var(--print-bg-primary) !important;
+    color: var(--print-text-primary) !important;
+  }
+
+  /* Override dark theme colors for print */
+  .bg-gray-primary {
+    background-color: var(--print-bg-primary) !important;
+  }
+
+  .bg-gray-secondary {
+    background-color: var(--print-bg-secondary) !important;
+  }
+
+  .bg-gray-tertiary {
+    background-color: var(--print-bg-tertiary) !important;
+  }
+
+  .text-text-primary {
+    color: var(--print-text-primary) !important;
+  }
+
+  .text-text-secondary {
+    color: var(--print-text-secondary) !important;
+  }
+
+  .text-accent {
+    color: var(--print-accent) !important;
+  }
+
+  /* Override any elements with dark background colors */
+  [style*="background-color: #262421"],
+  [style*="background-color:#262421"],
+  [style*="background: #262421"],
+  [style*="background:#262421"] {
+    background-color: var(--print-bg-primary) !important;
+  }
+
+  [style*="background-color: #302E2B"],
+  [style*="background-color:#302E2B"],
+  [style*="background: #302E2B"],
+  [style*="background:#302E2B"] {
+    background-color: var(--print-bg-secondary) !important;
+  }
+
+  [style*="background-color: #403D39"],
+  [style*="background-color:#403D39"],
+  [style*="background: #403D39"],
+  [style*="background:#403D39"] {
+    background-color: var(--print-bg-tertiary) !important;
+  }
+
+  /* Remove shadows and effects for print */
+  .shadow,
+  .shadow-sm,
+  .shadow-md,
+  .shadow-lg,
+  .shadow-xl {
+    box-shadow: none !important;
+  }
+
+  /* Simplify borders for print */
+  .border {
+    border-color: var(--print-border) !important;
+  }
+}
+
+/* Print Mode Classes - Can be applied programmatically */
+.print-mode {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8f9fa;
+  --bg-tertiary: #e9ecef;
+  --text-primary: #212529;
+  --text-secondary: #6c757d;
+  --accent: #0d6efd;
+  --border: #dee2e6;
+}
+
+.print-mode .bg-gray-primary {
+  background-color: var(--bg-primary) !important;
+}
+
+.print-mode .bg-gray-secondary {
+  background-color: var(--bg-secondary) !important;
+}
+
+.print-mode .bg-gray-tertiary {
+  background-color: var(--bg-tertiary) !important;
+}
+
+.print-mode .text-text-primary {
+  color: var(--text-primary) !important;
+}
+
+.print-mode .text-text-secondary {
+  color: var(--text-secondary) !important;
+}
+
+.print-mode .text-accent {
+  color: var(--accent) !important;
+}
+
+/* Override any elements with dark background colors in print mode */
+.print-mode [style*="background-color: #262421"],
+.print-mode [style*="background-color:#262421"],
+.print-mode [style*="background: #262421"],
+.print-mode [style*="background:#262421"] {
+  background-color: var(--bg-primary) !important;
+}
+
+.print-mode [style*="background-color: #302E2B"],
+.print-mode [style*="background-color:#302E2B"],
+.print-mode [style*="background: #302E2B"],
+.print-mode [style*="background:#302E2B"] {
+  background-color: var(--bg-secondary) !important;
+}
+
+.print-mode [style*="background-color: #403D39"],
+.print-mode [style*="background-color:#403D39"],
+.print-mode [style*="background: #403D39"],
+.print-mode [style*="background:#403D39"] {
+  background-color: var(--bg-tertiary) !important;
+}
+
+.print-white-bg {
+  background-color: #ffffff !important;
+}
+
+.print-dark-text {
+  color: #212529 !important;
+}
+
+/* Print-specific utility classes */
+.print-page-break {
+  page-break-before: always;
+}
+
+.print-avoid-break {
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
+.print-no-shadow {
+  box-shadow: none !important;
+}
+
+/* Print-optimized typography */
+@media print {
+  body {
+    font-size: 12pt;
+    line-height: 1.4;
+  }
+
+  h1 { font-size: 18pt; font-weight: bold; }
+  h2 { font-size: 16pt; font-weight: bold; }
+  h3 { font-size: 14pt; font-weight: bold; }
+  h4 { font-size: 12pt; font-weight: bold; }
+  h5 { font-size: 11pt; font-weight: bold; }
+  h6 { font-size: 10pt; font-weight: bold; }
+
+  /* Ensure good contrast for print */
+  a {
+    color: #0d6efd !important;
+    text-decoration: underline;
+  }
+
+  /* Hide elements that shouldn't be printed */
+  .no-print {
+    display: none !important;
+  }
+}
