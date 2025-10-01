@@ -1,8 +1,8 @@
-# ChessTrax AI Coach - Help & About Feature Design
+# ChessTrax - Help & About Feature Design
 
 ## Overview
 
-This design document outlines the implementation of Help and About functionality for the ChessTrax AI Coach application. The features will add two new interactive components: a Help button providing user assistance and an About button containing application information, version details, support links, and an update mechanism.
+This design document outlines the implementation of Help and About functionality for the ChessTrax application. The features will add two new interactive components: a Help button providing user assistance and an About button containing application information, version details, support links, and an update mechanism.
 
 **Key Features:**
 - Help button with comprehensive user guidance
@@ -235,7 +235,7 @@ Response: {
 ```json
 {
   "about": {
-    "title": "About ChessTrax AI Coach",
+    "title": "About ChessTrax",
     "version": "Version",
     "buildDate": "Build Date", 
     "buildTime": "Build Time",

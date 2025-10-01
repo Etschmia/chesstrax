@@ -29,6 +29,15 @@ const AnalysisReport: React.FC<AnalysisReportProps> = ({ data, lichessUser, mode
   const [isDownloadingPdf, setIsDownloadingPdf] = useState(false);
   const [didCopyToClipboard, setDidCopyToClipboard] = useState(false);
 
+  const safeData = {
+    ...data,
+    openingAnalysis: data.openingAnalysis || { asWhite: '', asBlack: '' },
+    tacticalMotifs: data.tacticalMotifs || [],
+    strategicWeaknesses: data.strategicWeaknesses || [],
+    endgamePractice: data.endgamePractice || [],
+    summary: data.summary || '',
+  };
+
   const handleDownloadPdf = async () => {
     const reportElement = document.getElementById('exportable-area');
     if (!reportElement) return;
@@ -69,24 +78,24 @@ const AnalysisReport: React.FC<AnalysisReportProps> = ({ data, lichessUser, mode
         text += `${t('clipboardGamePeriod', { range: gameDateRange })}\n`;
         text += `${t('clipboardPoweredBy', { model: modelName })}\n\n`;
 
-        text += `${t('clipboardPrimaryFocus')}\n${data.summary}\n\n`;
+        text += `${t('clipboardPrimaryFocus')}\n${safeData.summary}\n\n`;
 
         text += `${t('clipboardOpeningAnalysis')}\n`;
-        text += `${t('clipboardAsWhite')}\n${data.openingAnalysis.asWhite}\n\n`;
-        text += `${t('clipboardAsBlack')}\n${data.openingAnalysis.asBlack}\n\n`;
+        text += `${t('clipboardAsWhite')}\n${safeData.openingAnalysis.asWhite}\n\n`;
+        text += `${t('clipboardAsBlack')}\n${safeData.openingAnalysis.asBlack}\n\n`;
 
         text += `${t('clipboardTacticalBlindSpots')}\n`;
-        data.tacticalMotifs.forEach(item => {
+        safeData.tacticalMotifs.forEach(item => {
             text += `* ${item.motif}:\n${item.explanation}\n\n`;
         });
 
         text += `${t('clipboardStrategicWeaknesses')}\n`;
-        data.strategicWeaknesses.forEach(item => {
+        safeData.strategicWeaknesses.forEach(item => {
             text += `* ${item.weakness}:\n${item.explanation}\n\n`;
         });
         
         text += `${t('clipboardEndgameTraining')}\n`;
-        data.endgamePractice.forEach(item => {
+        safeData.endgamePractice.forEach(item => {
             text += `* ${item.endgameType}:\n${item.explanation}\n\n`;
         });
 
@@ -114,7 +123,7 @@ const AnalysisReport: React.FC<AnalysisReportProps> = ({ data, lichessUser, mode
 
         <div className="space-y-8">
             <ReportCard icon={Star} title={t('primaryFocus')}> 
-                <p className="text-text-secondary"><Linkify text={data.summary} /></p>
+                <p className="text-text-secondary"><Linkify text={safeData.summary} /></p>
             </ReportCard>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -122,11 +131,11 @@ const AnalysisReport: React.FC<AnalysisReportProps> = ({ data, lichessUser, mode
                 <div className='space-y-4'>
                     <div>
                         <h4 className="font-bold text-text-primary mb-1">{t('asWhite')}</h4>
-                        <p className="text-text-secondary"><Linkify text={data.openingAnalysis.asWhite} /></p>
+                        <p className="text-text-secondary"><Linkify text={safeData.openingAnalysis.asWhite} /></p>
                     </div>
                      <div>
                         <h4 className="font-bold text-text-primary mb-1">{t('asBlack')}</h4>
-                        <p className="text-text-secondary"><Linkify text={data.openingAnalysis.asBlack} /></p>
+                        <p className="text-text-secondary"><Linkify text={safeData.openingAnalysis.asBlack} /></p>
                     </div>
                     <TrainingLink href="https://lichess.org/opening">{t('exploreOpenings')}</TrainingLink>
                 </div>
@@ -134,7 +143,7 @@ const AnalysisReport: React.FC<AnalysisReportProps> = ({ data, lichessUser, mode
             
             <ReportCard icon={Target} title={t('tacticalBlindSpots')}>
               <ul className="space-y-4">
-                {data.tacticalMotifs.map((motif, index) => (
+                {safeData.tacticalMotifs.map((motif, index) => (
                   <li key={index}>
                     <h4 className="font-bold text-text-primary">{motif.motif}</h4>
                     <p className="text-text-secondary mb-2"><Linkify text={motif.explanation} /></p>
@@ -146,7 +155,7 @@ const AnalysisReport: React.FC<AnalysisReportProps> = ({ data, lichessUser, mode
             
             <ReportCard icon={BrainCircuit} title={t('strategicWeaknesses')}>
               <ul className="space-y-4">
-                {data.strategicWeaknesses.map((weakness, index) => (
+                {safeData.strategicWeaknesses.map((weakness, index) => (
                   <li key={index}>
                     <h4 className="font-bold text-text-primary">{weakness.weakness}</h4>
                     <p className="text-text-secondary"><Linkify text={weakness.explanation} /></p>
@@ -157,7 +166,7 @@ const AnalysisReport: React.FC<AnalysisReportProps> = ({ data, lichessUser, mode
 
             <ReportCard icon={Shield} title={t('endgameTraining')}>
               <ul className="space-y-4">
-                {data.endgamePractice.map((endgame, index) => (
+                {safeData.endgamePractice.map((endgame, index) => (
                   <li key={index}>
                     <h4 className="font-bold text-text-primary">{endgame.endgameType}</h4>
                     <p className="text-text-secondary mb-2"><Linkify text={endgame.explanation} /></p>

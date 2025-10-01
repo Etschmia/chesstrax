@@ -1,4 +1,4 @@
-// Simple service worker for ChessTrax AI Coach
+// Simple service worker for ChessTrax
 const CACHE_NAME = 'chesstrax-v0.2.0';
 
 // Install event

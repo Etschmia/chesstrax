@@ -28,6 +28,10 @@ export class ServiceFactory {
         const grokModule = await import('./grokService');
         service = grokModule.default;
         break;
+      case 'openrouter':
+        const openrouterModule = await import('./openRouterService');
+        service = openrouterModule.default;
+        break;
       case 'anthropic':
         const anthropicModule = await import('./anthropicService');
         service = anthropicModule.default;

@@ -2,7 +2,7 @@ import React, { useState, useCallback, useRef, Suspense, useEffect } from 'react
 import { useTranslation } from 'react-i18next';
 import type { AnalysisReportData } from './types';
 import { fetchPgnFromLichess } from './services/lichessService';
-import { usePgnParser, detectUserFromPgn, findUserGames } from './hooks/usePgnParser';
+import { usePgnParser, findUserGames } from './hooks/usePgnParser';
 import useSettings from './hooks/useSettings';
 import { ServiceFactory } from './services/serviceFactory.js';
 
@@ -16,7 +16,7 @@ const Settings = React.lazy(() => import('./components/Settings'));
 const LLMProviderDialog = React.lazy(() => import('./components/LLMProviderDialog'));
 const HelpDialog = React.lazy(() => import('./components/HelpDialog'));
 const AboutDialog = React.lazy(() => import('./components/AboutDialog'));
-import { LayoutGrid, BrainCircuit, Target, Settings as SettingsIcon, X, AlertTriangle, KeyRound, HelpCircle, Info } from 'lucide-react';
+import { LayoutGrid, BrainCircuit, Target, X, AlertTriangle, KeyRound, HelpCircle, Info } from 'lucide-react';
 
 type DataSource = 'upload' | 'lichess';
 
@@ -54,7 +54,7 @@ const App: React.FC = () => {
   const [isAboutDialogOpen, setIsAboutDialogOpen] = useState(false);
   const fileUploadRef = useRef<FileUploadRef>(null);
 
-  const { lostGamesPgn, gameDates, detectedUser } = usePgnParser(pgnContent);
+  const { detectedUser } = usePgnParser(pgnContent);
 
   // Preload the default Gemini service on component mount
   useEffect(() => {
@@ -109,26 +109,36 @@ const App: React.FC = () => {
     let apiKey: string | undefined = undefined; // Start with undefined
     let providerId: string;
 
-    // 1. Check for user-provided Gemini key in localStorage first
-    const userGeminiApiKey = localStorage.getItem('userGeminiApiKey');
-    if (userGeminiApiKey) {
-        providerId = 'gemini';
-        apiKey = userGeminiApiKey;
-    } else if (settings.selectedProviderId && settings.apiKeys[settings.selectedProviderId as keyof typeof settings.apiKeys]) {
-      // 2. Use the key from the general settings if available
-      providerId = settings.selectedProviderId;
-      apiKey = settings.apiKeys[settings.selectedProviderId as keyof typeof settings.apiKeys];
+    const userGeminiKey = localStorage.getItem('userGeminiApiKey');
+
+    // Check for OpenRouter env key first (support both VITE_ and non-prefixed for compatibility)
+    const openRouterKey = process.env.VITE_OPENROUTER_API_KEY || process.env.OPENROUTER_API_KEY;
+    if (openRouterKey) {
+      providerId = 'openrouter';
+      apiKey = openRouterKey;
     } else {
-      // 3. Default to Gemini with environment variable as a last resort
-      providerId = 'gemini';
-      apiKey = process.env.GEMINI_API_KEY || ''; // Fallback to env var
+      let intendedProvider: string;
+      if (userGeminiKey) {
+        intendedProvider = 'gemini';
+        apiKey = userGeminiKey;
+      } else if (settings.selectedProviderId && settings.apiKeys[settings.selectedProviderId as keyof typeof settings.apiKeys]) {
+        // 2. Use the key from the general settings if available
+        intendedProvider = settings.selectedProviderId;
+        apiKey = settings.apiKeys[settings.selectedProviderId as keyof typeof settings.apiKeys];
+      } else {
+        intendedProvider = settings.selectedProviderId || 'gemini';
+        if (intendedProvider === 'gemini') {
+          apiKey = process.env.VITE_GEMINI_API_KEY || process.env.GEMINI_API_KEY || '';
+        }
+      }
+      providerId = intendedProvider;
     }
 
     if (!apiKey) {
       const providerName = providers.find(p => p.id === providerId)?.name || providerId;
       // Make the error message more specific
-      if (providerId === 'gemini' && !userGeminiApiKey) {
-         setError(`API key for ${providerName} is missing. Please add your own key using the key icon in the header.`);
+      if (providerId === 'gemini' && !userGeminiKey && !(process.env.VITE_GEMINI_API_KEY || process.env.GEMINI_API_KEY)) {
+         setError(`API key for ${providerName} is missing. Please add your own key using the key icon in the header or set GEMINI_API_KEY in .env.local.`);
          setIsApiKeyPanelOpen(true);
       } else {
         setError(`API key for ${providerName} is missing. Please add it in the settings.`);
@@ -215,7 +225,7 @@ const App: React.FC = () => {
             setError(t('error.noPgnFile'));
             return;
        }
-       const user = detectUserFromPgn(pgnContent);
+       const user = detectedUser;
        if (!user) {
            setError(t('error.userDetectFailed'));
            return;
@@ -239,8 +249,13 @@ const App: React.FC = () => {
   if (isAnalyzing) loadingText = t('analyzing');
   
   const isAnalyzeButtonDisabled = isLoading || (dataSource === 'lichess' && !lichessUsername.trim()) || (dataSource === 'upload' && !pgnContent);
-
-  const selectedProviderName = providers.find(p => p.id === settings.selectedProviderId)?.name || 'Google Gemini';
+/*
+  console.log('Debug: process.env.VITE_OPENROUTER_API_KEY:', process.env.VITE_OPENROUTER_API_KEY ? 'present (length: ' + process.env.VITE_OPENROUTER_API_KEY.length + ')' : 'missing');
+  console.log('Debug: process.env.OPENROUTER_API_KEY:', process.env.OPENROUTER_API_KEY ? 'present (length: ' + process.env.OPENROUTER_API_KEY.length + ')' : 'missing');
+*/
+  const openRouterKeyForDisplay = process.env.VITE_OPENROUTER_API_KEY || process.env.OPENROUTER_API_KEY;
+  const effectiveProviderId = openRouterKeyForDisplay ? 'openrouter' : settings.selectedProviderId || 'gemini';
+  const selectedProviderName = providers.find(p => p.id === effectiveProviderId)?.name || 'Google Gemini';
 
   const mainContent = () => {
     if (isLoading) {
@@ -388,7 +403,7 @@ const App: React.FC = () => {
         {mainContent()}
       </main>
       <footer className="w-full max-w-5xl mx-auto text-center mt-8 text-text-secondary text-xs">
-          <p>Analysis powered by {selectedProviderName}. This is not a substitute for professional coaching.</p>
+          <p>Analysis powered by {selectedProviderName}. {effectiveProviderId === 'openrouter' && 'Using OpenRouter with xAI Grok 4 Fast due to environment configuration. '}This is not a substitute for professional coaching.</p>
       </footer>
     </div>
   );

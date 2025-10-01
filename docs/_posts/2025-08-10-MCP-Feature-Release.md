@@ -5,7 +5,7 @@ date:   2025-08-10 10:00:00 +0200
 categories: update feature
 ---
 
-Es ist soweit! Ein zentrales Feature, das ich mir von Anfang an für den ChessTrax AI Coach gewünscht habe, ist nun Realität. Mit dem neuesten Update erhältst du die volle Kontrolle darüber, welche "Intelligenz" deine Schachpartien analysiert.
+Es ist soweit! Ein zentrales Feature, das ich mir von Anfang an für den ChessTrax gewünscht habe, ist nun Realität. Mit dem neuesten Update erhältst du die volle Kontrolle darüber, welche "Intelligenz" deine Schachpartien analysiert.
 
 ### Das "Model Context Protocol" (MCP) ist da!
 
@@ -21,7 +21,7 @@ Mir war ein Punkt bei der Umsetzung extrem wichtig: **Dein API-Schlüssel verlä
 
 ### Warum dieser Schritt?
 
-Diese Neuerung macht den ChessTrax AI Coach zu einem wesentlich mächtigeren und flexibleren Werkzeug. Du bist nicht mehr von meinem kostenlosen Kontingent abhängig und kannst die Analyse mit den stärksten verfügbaren KI-Modellen durchführen, wenn du das möchtest. Es ist ein entscheidender Schritt, um die App zukunftssicher und anpassbar für die Wünsche der Community zu machen.
+Diese Neuerung macht den ChessTrax zu einem wesentlich mächtigeren und flexibleren Werkzeug. Du bist nicht mehr von meinem kostenlosen Kontingent abhängig und kannst die Analyse mit den stärksten verfügbaren KI-Modellen durchführen, wenn du das möchtest. Es ist ein entscheidender Schritt, um die App zukunftssicher und anpassbar für die Wünsche der Community zu machen.
 
 Ich bin unglaublich gespannt auf euer Feedback zu diesem Feature! Probiert es aus, testet die verschiedenen Modelle und berichtet mir von euren Erfahrungen.
 

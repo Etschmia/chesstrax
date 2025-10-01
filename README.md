@@ -2,9 +2,9 @@
 
 **Das beste Schach-Lehrbuch, dass es für Dich geben kann, ist eines, das unmittelbar aus Deinen verlorenen Partien entsteht.**
 
-ChessTrax AI Coach ist dein persönlicher Schachtrainer, der deine verlorenen Partien analysiert und dir hilft, die entscheidenden Schwachstellen in deinem Spiel zu erkennen. Gib einfach deinen Lichess-Benutzernamen ein, um deine Partien automatisch zu laden, oder lade eine PGN-Datei hoch. Du erhältst eine detaillierte Auswertung, die dir aufzeigt, wo du dich verbessern kannst.
+ChessTrax ist dein persönlicher Schachtrainer, der deine verlorenen Partien analysiert und dir hilft, die entscheidenden Schwachstellen in deinem Spiel zu erkennen. Gib einfach deinen Lichess-Benutzernamen ein, um deine Partien automatisch zu laden, oder lade eine PGN-Datei hoch. Du erhältst eine detaillierte Auswertung, die dir aufzeigt, wo du dich verbessern kannst.
 
-**Welche Fragen beantwortet dir der ChessTrax AI Coach?**
+**Welche Fragen beantwortet dir der ChessTrax?**
 
 *   **Taktische Motive:** Welche taktischen Muster übersiehst du immer wieder?
 *   **Eröffnungen:** Welche Eröffnungen bereiten dir als Weißer oder Schwarzer die größten Schwierigkeiten?
@@ -22,6 +22,10 @@ ChessTrax AI Coach ist dein persönlicher Schachtrainer, der deine verlorenen Pa
 ### Kernfunktionen
 
 - **Hochwertige Analyse mit Google Gemini**: Die Standardanalyse wird vom Modell **Gemini 2.5 Flash** durchgeführt. Dieses Modell ist extrem schnell und liefert qualitativ hochwertige und tiefgehende Einblicke in deine Partien. Für die allermeisten Nutzer ist diese Analyse völlig ausreichend und der empfohlene Weg.
+
+- **OpenRouter Integration (Umgebungsvariable)**: Wenn die Umgebungsvariable `OPENROUTER_API_KEY` in der `.env.local` konfiguriert ist, wird automatisch das Modell **xAI Grok 4 Fast** über OpenRouter verwendet, anstelle von Gemini. Dies überschreibt die Standardkonfiguration und ermöglicht die Nutzung von Grok ohne weitere Einstellungen. Die API-Schlüssel wird sicher im Browser verarbeitet und nicht an Server gesendet. Stelle sicher, dass nach Änderungen der `.env.local` der Dev-Server neu gestartet wird (`npm run dev`).
+
+- **OpenRouter Integration (Umgebungsvariable)**: Wenn die Umgebungsvariable `OPENROUTER_API_KEY` in der `.env.local` konfiguriert ist, wird automatisch das Modell **xAI Grok 4 Fast** über OpenRouter verwendet, anstelle von Gemini. Dies überschreibt die Standardkonfiguration und ermöglicht die Nutzung von Grok ohne weitere Einstellungen. Die API-Schlüssel wird sicher im Browser verarbeitet und nicht an Server gesendet. Stelle sicher, dass nach Änderungen der `.env.local` der Dev-Server neu gestartet wird (`npm run dev`).
 - **(Optional) Experimentiere mit deinem eigenen LLM**: Für technisch versierte Nutzer und Experimentierfreudige gibt es die Möglichkeit, einen eigenen API-Schlüssel für ein anderes unterstütztes Modell (z.B. OpenAI GPT, Anthropic Claude, xAI Grok) zu hinterlegen. Dies ist **keine Notwendigkeit**, sondern ein Zusatzangebot für alle, die bereits eigene LLMs nutzen und diese mit ChessTrax ausprobieren möchten. Dein Schlüssel wird dabei **sicher und ausschließlich in deinem Browser** gespeichert.
 - **Eigener Gemini API-Schlüssel**: Um eine übermäßige Nutzung des von mir bereitgestellten API-Schlüssels zu vermeiden, kannst du deinen eigenen, kostenlosen Gemini-API-Schlüssel von [Google AI Studio](https://aistudio.google.com/) hinterlegen. Klicke dazu einfach auf das Schlüssel-Symbol in der Kopfzeile der Anwendung. Dein Schlüssel wird sicher und nur in deinem Browser gespeichert.
 - **Lichess-API-Integration**: Die Partien werden direkt über die Lichess-API abgerufen. Es werden die letzten 2000 Partien abgerufen und von denen die Verlustpartien ausgewertet.

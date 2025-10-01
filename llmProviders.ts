@@ -1,7 +1,7 @@
 // /Users/tobiasbrendler/NodeJS/chesstrax/llmProviders.ts
 
 export interface LLMProvider {
-  id: 'gemini' | 'openai' | 'anthropic' | 'grok'; // Eindeutige ID
+  id: 'gemini' | 'openai' | 'anthropic' | 'grok' | 'openrouter'; // Eindeutige ID
   name: string; // Angezeigter Name, z.B. "Google Gemini"
   apiKeyName: string; // Name des API-Schlüssels, z.B. "Gemini API Key"
   documentationUrl: string; // Link zur Doku, wo der Key zu finden ist
@@ -25,5 +25,11 @@ export const providers: LLMProvider[] = [
     name: 'Anthropic Claude 3',
     apiKeyName: 'Anthropic API Key',
     documentationUrl: 'https://docs.anthropic.com/claude/reference/getting-started-with-the-api',
+  },
+  {
+    id: 'openrouter',
+    name: 'xAI Grok 4 Fast',
+    apiKeyName: 'OpenRouter API Key',
+    documentationUrl: 'https://openrouter.ai/docs',
   },
 ];
