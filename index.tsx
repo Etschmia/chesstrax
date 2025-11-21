@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom/client';
 import { I18nextProvider } from 'react-i18next';
 import App from './App';
 import i18n from './public/i18n';
+import GoogleAnalytics from './components/GoogleAnalytics';
 
 // Register service worker for update functionality
 if ('serviceWorker' in navigator) {
@@ -26,6 +27,7 @@ if (!rootElement) {
 const root = ReactDOM.createRoot(rootElement);
 root.render(
   <React.StrictMode>
+    <GoogleAnalytics />
     <I18nextProvider i18n={i18n}>
       <App />
     </I18nextProvider>
