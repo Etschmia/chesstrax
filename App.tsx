@@ -156,12 +156,6 @@ const App: React.FC = () => {
       return;
     }
 
-    fetch('/api/log', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username: user }),
-    }).catch(logError => console.warn('Usage logging failed:', logError));
-
     const { lostGamesPgn, gameDates: parsedGameDates } = findUserGames(pgn, user);
 
     if (lostGamesPgn.length === 0) {
@@ -206,6 +200,14 @@ const App: React.FC = () => {
         return;
       }
       const user = lichessUsername.trim();
+      
+      // Log the usage immediately
+      fetch('/api/log', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: user }),
+      }).catch(logError => console.warn('Usage logging failed:', logError));
+
       setIsFetchingPgn(true);
       try {
         const pgn = await fetchPgnFromLichess(user);
