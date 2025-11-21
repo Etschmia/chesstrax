@@ -200,13 +200,23 @@ const App: React.FC = () => {
         return;
       }
       const user = lichessUsername.trim();
-      
+
       // Log the usage immediately
+      console.log('Attempting to log usage for user:', user);
       fetch('/api/log', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username: user }),
-      }).catch(logError => console.warn('Usage logging failed:', logError));
+      })
+        .then(response => {
+          console.log('Usage log response status:', response.status);
+          if (!response.ok) {
+            console.error('Usage log failed with status:', response.status);
+            return response.text().then(text => console.error('Usage log error text:', text));
+          }
+          console.log('Usage log successful');
+        })
+        .catch(logError => console.error('Usage logging network error:', logError));
 
       setIsFetchingPgn(true);
       try {

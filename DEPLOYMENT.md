@@ -101,16 +101,19 @@ Erstelle oder bearbeite `/etc/caddy/Caddyfile`:
 ```caddyfile
 chesstrax.martuni.de {
     # Setze den Document-Root auf das Build-Verzeichnis von Vite
-    # WICHTIG: Ersetze /path/to/chesstrax mit dem tatsächlichen Pfad zu deinem Projekt
-    root * /path/to/chesstrax/dist
 
-    # Leite API-Anfragen an den Node.js-Server (Port 3001) weiter
-    reverse_proxy /api/* localhost:3020
+    root * /home/librechat/chesstrax/dist
 
-    # Liefere die statischen Dateien aus. Der Fallback auf /index.html ist
-    # entscheidend für das Funktionieren von Single-Page-Applications (SPA).
-    try_files {path} /index.html
-    file_server    
+    # Handle API requests FIRST
+    handle /api/* {
+        reverse_proxy localhost:3020
+    }
+
+    # Handle everything else (SPA fallback)
+    handle {
+        try_files {path} /index.html
+        file_server
+    }
 
     # Sicherheits-Header
     header {

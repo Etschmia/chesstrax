@@ -14,9 +14,12 @@ app.use(express.json());
 
 // API endpoint for logging usage
 app.post('/api/log', (req, res) => {
+    console.log('Received request to /api/log');
+    console.log('Request body:', req.body);
     const { username } = req.body;
 
     if (!username || typeof username !== 'string') {
+        console.error('Invalid username received:', username);
         return res.status(400).json({ error: 'Invalid username' });
     }
 
@@ -24,6 +27,8 @@ app.post('/api/log', (req, res) => {
     const logFile = path.join(logDir, 'usage.log');
     const timestamp = new Date().toISOString();
     const logEntry = `${username},${timestamp.split('T')[0]},${timestamp.split('T')[1].replace('Z', '')}\n`;
+
+    console.log(`Attempting to write to log file: ${logFile}`);
 
     // Ensure log directory exists
     fs.mkdir(logDir, { recursive: true }, (err) => {
@@ -38,12 +43,17 @@ app.post('/api/log', (req, res) => {
                 console.error('Error writing to log file:', err);
                 return res.status(500).json({ error: 'Internal Server Error' });
             }
-            console.log(`Logged usage for user: ${username}`);
+            console.log(`Successfully logged usage for user: ${username}`);
             res.status(200).json({ message: 'Log saved' });
         });
     });
 });
 
+app.get('/api/health', (req, res) => {
+    res.status(200).json({ status: 'ok' });
+});
+
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
+    console.log(`Log directory configured as: ${path.join(__dirname, 'logs', 'chesstrax')}`);
 });
