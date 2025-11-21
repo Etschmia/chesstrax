@@ -109,9 +109,8 @@ chesstrax.martuni.de {
 
     # Liefere die statischen Dateien aus. Der Fallback auf /index.html ist
     # entscheidend für das Funktionieren von Single-Page-Applications (SPA).
-    file_server {
-        try_files {path} /index.html
-    }
+    try_files {path} /index.html
+    file_server    
 
     # Sicherheits-Header
     header {
