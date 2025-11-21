@@ -20,6 +20,7 @@ export default defineConfig(({ mode }) => {
         'process.env.API_KEY': JSON.stringify(env.GEMINI_API_KEY),
         'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY),
         'process.env.OPENROUTER_API_KEY': JSON.stringify(env.OPENROUTER_API_KEY),
+        'process.env.VITE_GA_MEASUREMENT_ID': JSON.stringify(env.MESS_ID || env.VITE_MESS_ID || ''),
         '__APP_VERSION__': JSON.stringify(version),
         '__BUILD_DATE__': JSON.stringify(buildDate),
         '__BUILD_TIME__': JSON.stringify(buildTime)
