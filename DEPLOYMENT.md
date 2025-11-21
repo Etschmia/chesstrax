@@ -78,7 +78,7 @@ ExecStart=/usr/bin/node server.js
 
 Restart=always
 Environment=NODE_ENV=production
-Environment=PORT=3001
+Environment=PORT=3020
 
 [Install]
 WantedBy=multi-user.target
@@ -94,15 +94,26 @@ sudo systemctl start chesstrax
 
 ## 4. Caddy Webserver konfigurieren
 
-Caddy fungiert als Reverse Proxy und kümmert sich um HTTPS.
+Caddy fungiert als Webserver für die statischen Dateien der Anwendung und als Reverse Proxy für API-Anfragen. Diese Konfiguration ist effizienter, als alle Anfragen an den Node.js-Server weiterzuleiten.
 
 Erstelle oder bearbeite `/etc/caddy/Caddyfile`:
 
 ```caddyfile
 chesstrax.martuni.de {
-    reverse_proxy localhost:3001
+    # Setze den Document-Root auf das Build-Verzeichnis von Vite
+    # WICHTIG: Ersetze /path/to/chesstrax mit dem tatsächlichen Pfad zu deinem Projekt
+    root * /path/to/chesstrax/dist
 
-    # Optional: Sicherheits-Header
+    # Leite API-Anfragen an den Node.js-Server (Port 3001) weiter
+    reverse_proxy /api/* localhost:3020
+
+    # Liefere die statischen Dateien aus. Der Fallback auf /index.html ist
+    # entscheidend für das Funktionieren von Single-Page-Applications (SPA).
+    file_server {
+        try_files {path} /index.html
+    }
+
+    # Sicherheits-Header
     header {
         X-Frame-Options "SAMEORIGIN"
         X-XSS-Protection "1; mode=block"

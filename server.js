@@ -7,13 +7,10 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3020;
 
 // Middleware to parse JSON bodies
 app.use(express.json());
-
-// Serve static files from the 'dist' directory
-app.use(express.static(path.join(__dirname, 'dist')));
 
 // API endpoint for logging usage
 app.post('/api/log', (req, res) => {
@@ -45,11 +42,6 @@ app.post('/api/log', (req, res) => {
             res.status(200).json({ message: 'Log saved' });
         });
     });
-});
-
-// Catch-all handler to serve index.html for client-side routing
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
 
 app.listen(PORT, () => {
