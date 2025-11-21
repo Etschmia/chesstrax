@@ -57,7 +57,7 @@ Den Rohbau und die ersten Versionen dieser App habe ich komplett mit [AI Studio]
     ```
 Die Anwendung nutzt standardmäßig das leistungsstarke Gemini 2.5 Flash Modell über ein von mir bereitgestelltes Kontingent. Es ist keine weitere Konfiguration nötig. Wenn du dennoch ein anderes LLM mit deinem eigenen API-Schlüssel verwenden möchtest, kannst du dies direkt in den Einstellungen der Anwendung im Browser tun.
 
-**Live-Demo:** Du kannst die Anwendung hier live testen: [https://chesstrax.vercel.app/](https://chesstrax.vercel.app/)
+**Live-Demo:** Du kannst die Anwendung hier live testen: [https://chesstrax.martuni.de/](https://chesstrax.martuni.de/)
 
 ---
 
