@@ -39,7 +39,7 @@ interface Report {
 const App: React.FC = () => {
   const { t, i18n } = useTranslation();
   const { settings, providers } = useSettings();
-  
+
   const [pgnContent, setPgnContent] = useState<string | null>(null);
   const [report, setReport] = useState<Report | null>(null);
   const [isFetchingPgn, setIsFetchingPgn] = useState<boolean>(false);
@@ -94,13 +94,13 @@ const App: React.FC = () => {
     };
     reader.readAsText(file);
   };
-  
+
   const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const username = e.target.value;
     setLichessUsername(username);
     setDataSource('lichess');
     if (fileUploadRef.current) {
-        fileUploadRef.current.clearFile();
+      fileUploadRef.current.clearFile();
     }
     setPgnContent(null);
   };
@@ -138,8 +138,8 @@ const App: React.FC = () => {
       const providerName = providers.find(p => p.id === providerId)?.name || providerId;
       // Make the error message more specific
       if (providerId === 'gemini' && !userGeminiKey && !(process.env.VITE_GEMINI_API_KEY || process.env.GEMINI_API_KEY)) {
-         setError(`API key for ${providerName} is missing. Please add your own key using the key icon in the header or set GEMINI_API_KEY in .env.local.`);
-         setIsApiKeyPanelOpen(true);
+        setError(`API key for ${providerName} is missing. Please add your own key using the key icon in the header or set GEMINI_API_KEY in .env.local.`);
+        setIsApiKeyPanelOpen(true);
       } else {
         setError(`API key for ${providerName} is missing. Please add it in the settings.`);
         setIsSettingsPanelOpen(true);
@@ -156,14 +156,14 @@ const App: React.FC = () => {
       return;
     }
 
-    fetch('/api/log-usage', {
+    fetch('/api/log', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username: user, provider: providerId }),
+      body: JSON.stringify({ username: user }),
     }).catch(logError => console.warn('Usage logging failed:', logError));
 
     const { lostGamesPgn, gameDates: parsedGameDates } = findUserGames(pgn, user);
-    
+
     if (lostGamesPgn.length === 0) {
       setError(t('error.noLostGames'));
       return;
@@ -175,12 +175,12 @@ const App: React.FC = () => {
 
     try {
       const gamesToAnalyze = lostGamesPgn.slice(-50).join('\n\n');
-      
+
       const currentLang = i18n.language;
       let apiLang: 'en' | 'de' | 'hy' = 'en';
       if (currentLang.startsWith('de')) apiLang = 'de';
       else if (currentLang.startsWith('hy')) apiLang = 'hy';
-      
+
       const result = await service.analyzeGames(gamesToAnalyze, apiKey, user, apiLang);
       setReport({
         data: result,
@@ -199,7 +199,7 @@ const App: React.FC = () => {
   const handleAnalyzeClick = useCallback(async () => {
     setError(null);
     setReport(null);
-    
+
     if (dataSource === 'lichess') {
       if (!lichessUsername.trim()) {
         setError(t('error.noUser'));
@@ -221,19 +221,19 @@ const App: React.FC = () => {
         setIsFetchingPgn(false);
       }
     } else { // 'upload'
-       if (!pgnContent) {
-            setError(t('error.noPgnFile'));
-            return;
-       }
-       const user = detectedUser;
-       if (!user) {
-           setError(t('error.userDetectFailed'));
-           return;
-       }
-       await performAnalysis(pgnContent, user);
+      if (!pgnContent) {
+        setError(t('error.noPgnFile'));
+        return;
+      }
+      const user = detectedUser;
+      if (!user) {
+        setError(t('error.userDetectFailed'));
+        return;
+      }
+      await performAnalysis(pgnContent, user);
     }
   }, [dataSource, lichessUsername, pgnContent, performAnalysis, t]);
-  
+
   const changeLanguage = (lng: 'en' | 'de' | 'hy') => {
     i18n.changeLanguage(lng);
   };
@@ -242,17 +242,17 @@ const App: React.FC = () => {
     setIsLlmDialogOpen(false);
     setIsSettingsPanelOpen(true);
   };
-  
+
   const isLoading = isFetchingPgn || isAnalyzing;
   let loadingText = t('analyze');
   if (isFetchingPgn) loadingText = t('fetchingGames');
   if (isAnalyzing) loadingText = t('analyzing');
-  
+
   const isAnalyzeButtonDisabled = isLoading || (dataSource === 'lichess' && !lichessUsername.trim()) || (dataSource === 'upload' && !pgnContent);
-/*
-  console.log('Debug: process.env.VITE_OPENROUTER_API_KEY:', process.env.VITE_OPENROUTER_API_KEY ? 'present (length: ' + process.env.VITE_OPENROUTER_API_KEY.length + ')' : 'missing');
-  console.log('Debug: process.env.OPENROUTER_API_KEY:', process.env.OPENROUTER_API_KEY ? 'present (length: ' + process.env.OPENROUTER_API_KEY.length + ')' : 'missing');
-*/
+  /*
+    console.log('Debug: process.env.VITE_OPENROUTER_API_KEY:', process.env.VITE_OPENROUTER_API_KEY ? 'present (length: ' + process.env.VITE_OPENROUTER_API_KEY.length + ')' : 'missing');
+    console.log('Debug: process.env.OPENROUTER_API_KEY:', process.env.OPENROUTER_API_KEY ? 'present (length: ' + process.env.OPENROUTER_API_KEY.length + ')' : 'missing');
+  */
   const openRouterKeyForDisplay = process.env.VITE_OPENROUTER_API_KEY || process.env.OPENROUTER_API_KEY;
   const effectiveProviderId = openRouterKeyForDisplay ? 'openrouter' : settings.selectedProviderId || 'gemini';
   const selectedProviderName = providers.find(p => p.id === effectiveProviderId)?.name || 'Google Gemini';
@@ -285,12 +285,12 @@ const App: React.FC = () => {
         </div>
         <h2 className="text-3xl font-bold text-text-primary mb-2">{t('readyTitle')}</h2>
         <p className="text-text-secondary mb-6">{t('appDescription')}</p>
-        
+
         {error && (
-            <div className="my-4 bg-red-900/50 border border-red-700 text-red-300 px-4 py-3 rounded-lg flex items-start gap-3">
-              <AlertTriangle className="h-5 w-5 mt-0.5 text-red-400" />
-              <span>{error}</span>
-            </div>
+          <div className="my-4 bg-red-900/50 border border-red-700 text-red-300 px-4 py-3 rounded-lg flex items-start gap-3">
+            <AlertTriangle className="h-5 w-5 mt-0.5 text-red-400" />
+            <span>{error}</span>
+          </div>
         )}
 
         <div>
@@ -306,48 +306,48 @@ const App: React.FC = () => {
         </div>
 
         <div className="flex items-center my-4">
-            <div className="flex-grow border-t border-gray-tertiary"></div>
-            <span className="flex-shrink mx-4 text-text-secondary uppercase text-xs font-bold">{t('or')}</span>
-            <div className="flex-grow border-t border-gray-tertiary"></div>
+          <div className="flex-grow border-t border-gray-tertiary"></div>
+          <span className="flex-shrink mx-4 text-text-secondary uppercase text-xs font-bold">{t('or')}</span>
+          <div className="flex-grow border-t border-gray-tertiary"></div>
         </div>
-        
+
         <FileUpload ref={fileUploadRef} onFileSelect={handleFileSelect} />
         {dataSource === 'upload' && detectedUser && (
-            <p className="text-sm text-accent mt-2">{t('autoUserDetection')}</p>
+          <p className="text-sm text-accent mt-2">{t('autoUserDetection')}</p>
         )}
-        
+
         <button
-            onClick={handleAnalyzeClick}
-            disabled={isAnalyzeButtonDisabled}
-            className="mt-8 w-full bg-accent hover:bg-accent-dark text-gray-primary font-bold py-3 px-4 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 disabled:bg-gray-tertiary disabled:text-text-secondary disabled:cursor-not-allowed"
+          onClick={handleAnalyzeClick}
+          disabled={isAnalyzeButtonDisabled}
+          className="mt-8 w-full bg-accent hover:bg-accent-dark text-gray-primary font-bold py-3 px-4 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 disabled:bg-gray-tertiary disabled:text-text-secondary disabled:cursor-not-allowed"
         >
-            {isLoading ? <Spinner /> : <BrainCircuit size={20} />}
-            <span>{loadingText}</span>
+          {isLoading ? <Spinner /> : <BrainCircuit size={20} />}
+          <span>{loadingText}</span>
         </button>
       </div>
     );
   };
-  
+
 
   return (
     <div className="min-h-screen bg-gray-primary flex flex-col items-center justify-center p-4 selection:bg-accent/30">
       <Suspense fallback={null}>
-        <LLMProviderDialog 
-          isOpen={isLlmDialogOpen} 
-          onClose={() => setIsLlmDialogOpen(false)} 
-          onConfirm={handleLlmDialogConfirm} 
+        <LLMProviderDialog
+          isOpen={isLlmDialogOpen}
+          onClose={() => setIsLlmDialogOpen(false)}
+          onConfirm={handleLlmDialogConfirm}
         />
       </Suspense>
 
       <Suspense fallback={null}>
-        <HelpDialog 
+        <HelpDialog
           isOpen={isHelpDialogOpen}
           onClose={() => setIsHelpDialogOpen(false)}
         />
       </Suspense>
 
       <Suspense fallback={null}>
-        <AboutDialog 
+        <AboutDialog
           isOpen={isAboutDialogOpen}
           onClose={() => setIsAboutDialogOpen(false)}
         />
@@ -382,28 +382,28 @@ const App: React.FC = () => {
           Chess<span className="text-accent">Trax</span>
         </h1>
         <div className="flex items-center gap-4">
-            <button onClick={() => changeLanguage('en')} className={`px-3 py-1 text-sm rounded-md ${i18n.language.startsWith('en') ? 'bg-accent text-gray-primary font-bold' : 'text-text-secondary'}`}>EN</button>
-            <button onClick={() => changeLanguage('de')} className={`px-3 py-1 text-sm rounded-md ${i18n.language.startsWith('de') ? 'bg-accent text-gray-primary font-bold' : 'text-text-secondary'}`}>DE</button>
-            <button onClick={() => changeLanguage('hy')} className={`px-3 py-1 text-sm rounded-md ${i18n.language.startsWith('hy') ? 'bg-accent text-gray-primary font-bold' : 'text-text-secondary'}`}>HY</button>
-            <button onClick={() => setIsApiKeyPanelOpen(true)} title={t('apiKeySettings')} className="p-2 text-text-secondary hover:text-accent transition-colors">
-              <KeyRound size={20} />
-            </button>
-            <button onClick={() => setIsLlmDialogOpen(true)} className="px-3 py-1 text-sm rounded-md text-text-secondary hover:text-accent transition-colors">
-              {t('changeLlm')}
-            </button>
-            <button onClick={() => setIsHelpDialogOpen(true)} title={t('help')} className="p-2 text-text-secondary hover:text-accent transition-colors">
-              <HelpCircle size={20} />
-            </button>
-            <button onClick={() => setIsAboutDialogOpen(true)} title={t('about')} className="p-2 text-text-secondary hover:text-accent transition-colors">
-              <Info size={20} />
-            </button>
+          <button onClick={() => changeLanguage('en')} className={`px-3 py-1 text-sm rounded-md ${i18n.language.startsWith('en') ? 'bg-accent text-gray-primary font-bold' : 'text-text-secondary'}`}>EN</button>
+          <button onClick={() => changeLanguage('de')} className={`px-3 py-1 text-sm rounded-md ${i18n.language.startsWith('de') ? 'bg-accent text-gray-primary font-bold' : 'text-text-secondary'}`}>DE</button>
+          <button onClick={() => changeLanguage('hy')} className={`px-3 py-1 text-sm rounded-md ${i18n.language.startsWith('hy') ? 'bg-accent text-gray-primary font-bold' : 'text-text-secondary'}`}>HY</button>
+          <button onClick={() => setIsApiKeyPanelOpen(true)} title={t('apiKeySettings')} className="p-2 text-text-secondary hover:text-accent transition-colors">
+            <KeyRound size={20} />
+          </button>
+          <button onClick={() => setIsLlmDialogOpen(true)} className="px-3 py-1 text-sm rounded-md text-text-secondary hover:text-accent transition-colors">
+            {t('changeLlm')}
+          </button>
+          <button onClick={() => setIsHelpDialogOpen(true)} title={t('help')} className="p-2 text-text-secondary hover:text-accent transition-colors">
+            <HelpCircle size={20} />
+          </button>
+          <button onClick={() => setIsAboutDialogOpen(true)} title={t('about')} className="p-2 text-text-secondary hover:text-accent transition-colors">
+            <Info size={20} />
+          </button>
         </div>
       </header>
       <main className="w-full max-w-5xl mx-auto">
         {mainContent()}
       </main>
       <footer className="w-full max-w-5xl mx-auto text-center mt-8 text-text-secondary text-xs">
-          <p>Analysis powered by {selectedProviderName}. {effectiveProviderId === 'openrouter' && 'Using OpenRouter with xAI Grok 4 Fast due to environment configuration. '}This is not a substitute for professional coaching.</p>
+        <p>Analysis powered by {selectedProviderName}. {effectiveProviderId === 'openrouter' && 'Using OpenRouter with xAI Grok 4 Fast due to environment configuration. '}This is not a substitute for professional coaching.</p>
       </footer>
     </div>
   );

@@ -1,6 +1,6 @@
 title: ChessTrax Blog
-description: Blog betreffend chesstrax-ai-coach.
+description: Blog betreffend chesstrax.
 theme: jekyll-theme-minimal
-baseurl: "/chesstrax-ai-coach"
+baseurl: "/chesstrax"
 url: "https://etschmia.github.io"
 excerpt_separator: "<!--more-->"
