@@ -53,7 +53,7 @@ const Settings: React.FC = () => {
             id="provider-select" 
             value={selectedProviderId || ''} 
             onChange={handleProviderChange}
-            className="w-full h-12 bg-gray-tertiary border-2 border-gray-tertiary focus:border-accent focus:ring-0 focus:outline-none rounded-lg px-4 text-text-primary"
+            className="w-full h-12 bg-gray-tertiary border-2 border-gray-tertiary focus:border-accent focus:ring-0 focus:outline-hidden rounded-lg px-4 text-text-primary"
           >
             {providers.map(provider => (
               <option key={provider.id} value={provider.id}>
@@ -74,7 +74,7 @@ const Settings: React.FC = () => {
               value={currentApiKey}
               onChange={handleApiKeyChange}
               placeholder={t('settings.apiKeyPlaceholder', { providerName: selectedProvider.name })}
-              className="w-full h-12 bg-gray-tertiary border-2 border-gray-tertiary focus:border-accent focus:ring-0 focus:outline-none rounded-lg px-4 text-text-primary placeholder:text-text-secondary/70"
+              className="w-full h-12 bg-gray-tertiary border-2 border-gray-tertiary focus:border-accent focus:ring-0 focus:outline-hidden rounded-lg px-4 text-text-primary placeholder:text-text-secondary/70"
             />
             <small className="mt-2 text-xs text-text-secondary">
               <a href={selectedProvider.documentationUrl} target="_blank" rel="noopener noreferrer" className="hover:text-accent transition-colors">

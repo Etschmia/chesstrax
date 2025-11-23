@@ -45,7 +45,7 @@ const ApiKeyManager = () => {
             value={apiKey}
             onChange={(e) => setApiKey(e.target.value)}
             placeholder="Dein Gemini API Key von aistudio.google.com"
-            className="w-full bg-gray-700 text-white rounded-lg py-3 px-12 border border-gray-600 focus:outline-none focus:border-blue-500 transition-colors duration-300"
+            className="w-full bg-gray-700 text-white rounded-lg py-3 px-12 border border-gray-600 focus:outline-hidden focus:border-blue-500 transition-colors duration-300"
           />
         </div>
         <p className="text-gray-400 text-sm mb-6 text-center">

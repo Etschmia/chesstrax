@@ -313,14 +313,14 @@ const App: React.FC = () => {
             value={lichessUsername}
             onChange={handleUsernameChange}
             placeholder={t('lichessUsernamePlaceholder')}
-            className="w-full h-12 bg-gray-tertiary border-2 border-gray-tertiary focus:border-accent focus:ring-0 focus:outline-none rounded-lg px-4 text-text-primary placeholder:text-text-secondary/70"
+            className="w-full h-12 bg-gray-tertiary border-2 border-gray-tertiary focus:border-accent focus:ring-0 focus:outline-hidden rounded-lg px-4 text-text-primary placeholder:text-text-secondary/70"
           />
         </div>
 
         <div className="flex items-center my-4">
-          <div className="flex-grow border-t border-gray-tertiary"></div>
-          <span className="flex-shrink mx-4 text-text-secondary uppercase text-xs font-bold">{t('or')}</span>
-          <div className="flex-grow border-t border-gray-tertiary"></div>
+          <div className="grow border-t border-gray-tertiary"></div>
+          <span className="shrink mx-4 text-text-secondary uppercase text-xs font-bold">{t('or')}</span>
+          <div className="grow border-t border-gray-tertiary"></div>
         </div>
 
         <FileUpload ref={fileUploadRef} onFileSelect={handleFileSelect} />
@@ -366,7 +366,7 @@ const App: React.FC = () => {
       </Suspense>
 
       {isSettingsPanelOpen && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 flex items-center justify-center">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-xs z-40 flex items-center justify-center">
           <div className="bg-gray-secondary p-6 rounded-2xl shadow-2xl border border-gray-tertiary w-full max-w-md relative">
             <button onClick={() => setIsSettingsPanelOpen(false)} className="absolute top-3 right-3 text-text-secondary hover:text-text-primary">
               <X size={24} />
@@ -379,7 +379,7 @@ const App: React.FC = () => {
       )}
 
       {isApiKeyPanelOpen && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 flex items-center justify-center">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-xs z-40 flex items-center justify-center">
           <div className="bg-gray-secondary p-6 rounded-2xl shadow-2xl border border-gray-tertiary w-full max-w-md relative">
             <button onClick={() => setIsApiKeyPanelOpen(false)} className="absolute top-3 right-3 text-text-secondary hover:text-text-primary">
               <X size={24} />
