@@ -1,15 +1,14 @@
 import { ILLMService } from './llmService';
 import type { AnalysisReportData } from '../types';
+import type { SupportedLanguage } from './shared';
 
 class AnthropicService implements ILLMService {
   public async analyzeGames(
-    pgn: string,
-    apiKey: string,
-    lichessUser: string,
-    language: "en" | "de" | "hy"
+    _pgn: string,
+    _apiKey: string,
+    _lichessUser: string,
+    _language: SupportedLanguage
   ): Promise<AnalysisReportData> {
-    // This is a placeholder implementation.
-    console.log("Using Anthropic Service (placeholder)", { pgn, apiKey, lichessUser, language });
     throw new Error("Anthropic provider is not yet implemented.");
   }
 }

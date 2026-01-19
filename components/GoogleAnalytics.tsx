@@ -14,7 +14,7 @@ const GoogleAnalytics: React.FC = () => {
       const measurementId = process.env.VITE_GA_MEASUREMENT_ID || '';
 
       if (!measurementId) {
-        console.warn('Google Analytics: MESS_ID not found. Please set MESS_ID environment variable.');
+        console.warn('Google Analytics: Measurement ID not found. Please set MESS_ID in .env.local.');
         return;
       }
 
