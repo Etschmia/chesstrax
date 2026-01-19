@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { AnalysisReportData } from '../types';
 import ReportCard from './ReportCard';
@@ -28,6 +28,15 @@ const AnalysisReport: React.FC<AnalysisReportProps> = ({ data, lichessUser, mode
   const { t } = useTranslation();
   const [isDownloadingPdf, setIsDownloadingPdf] = useState(false);
   const [didCopyToClipboard, setDidCopyToClipboard] = useState(false);
+  const copyTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (copyTimeoutRef.current) {
+        clearTimeout(copyTimeoutRef.current);
+      }
+    };
+  }, []);
 
   const safeData = {
     ...data,
@@ -104,7 +113,10 @@ const AnalysisReport: React.FC<AnalysisReportProps> = ({ data, lichessUser, mode
     const reportText = generatePlainTextReport();
     navigator.clipboard.writeText(reportText);
     setDidCopyToClipboard(true);
-    setTimeout(() => setDidCopyToClipboard(false), 2500);
+    if (copyTimeoutRef.current) {
+      clearTimeout(copyTimeoutRef.current);
+    }
+    copyTimeoutRef.current = setTimeout(() => setDidCopyToClipboard(false), 2500);
   };
 
 
@@ -143,8 +155,8 @@ const AnalysisReport: React.FC<AnalysisReportProps> = ({ data, lichessUser, mode
             
             <ReportCard icon={Target} title={t('tacticalBlindSpots')}>
               <ul className="space-y-4">
-                {safeData.tacticalMotifs.map((motif, index) => (
-                  <li key={index}>
+                {safeData.tacticalMotifs.map((motif) => (
+                  <li key={motif.motif}>
                     <h4 className="font-bold text-text-primary">{motif.motif}</h4>
                     <p className="text-text-secondary mb-2"><Linkify text={motif.explanation} /></p>
                     <TrainingLink href={`https://lichess.org/training/themes`}>{t('practiceTactics')}</TrainingLink>
@@ -155,8 +167,8 @@ const AnalysisReport: React.FC<AnalysisReportProps> = ({ data, lichessUser, mode
             
             <ReportCard icon={BrainCircuit} title={t('strategicWeaknesses')}>
               <ul className="space-y-4">
-                {safeData.strategicWeaknesses.map((weakness, index) => (
-                  <li key={index}>
+                {safeData.strategicWeaknesses.map((weakness) => (
+                  <li key={weakness.weakness}>
                     <h4 className="font-bold text-text-primary">{weakness.weakness}</h4>
                     <p className="text-text-secondary"><Linkify text={weakness.explanation} /></p>
                   </li>
@@ -166,8 +178,8 @@ const AnalysisReport: React.FC<AnalysisReportProps> = ({ data, lichessUser, mode
 
             <ReportCard icon={Shield} title={t('endgameTraining')}>
               <ul className="space-y-4">
-                {safeData.endgamePractice.map((endgame, index) => (
-                  <li key={index}>
+                {safeData.endgamePractice.map((endgame) => (
+                  <li key={endgame.endgameType}>
                     <h4 className="font-bold text-text-primary">{endgame.endgameType}</h4>
                     <p className="text-text-secondary mb-2"><Linkify text={endgame.explanation} /></p>
                      <TrainingLink href="https://lichess.org/practice">{t('trainEndgames')}</TrainingLink>

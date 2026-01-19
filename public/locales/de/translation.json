@@ -118,5 +118,13 @@
   "about.update.checkPrompt": "Klicke auf die Schaltfläche unten, um nach der neuesten Version zu suchen.",
   "help": "Hilfe",
   "about": "Über",
-  "apiKeySettings": "API-Schlüssel-Einstellungen"
+  "apiKeySettings": "API-Schlüssel-Einstellungen",
+  "apiKeyManager.title": "Eigenen API Key nutzen",
+  "apiKeyManager.placeholder": "Dein Gemini API Key von aistudio.google.com",
+  "apiKeyManager.description": "Der API-Key wird lokal in deinem Browser gespeichert und für die Analyse verwendet.",
+  "apiKeyManager.save": "API-Key speichern",
+  "apiKeyManager.clear": "Gespeicherten API-Key löschen",
+  "apiKeyManager.error.empty": "Bitte gib deinen API-Key ein.",
+  "apiKeyManager.success.saved": "API-Key erfolgreich gespeichert!",
+  "apiKeyManager.success.cleared": "API-Key erfolgreich entfernt!"
 }

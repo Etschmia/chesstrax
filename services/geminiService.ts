@@ -1,7 +1,14 @@
 import { GoogleGenAI, Type } from '@google/genai';
 import type { AnalysisReportData } from '../types';
 import { ILLMService } from './llmService';
+import {
+  SupportedLanguage,
+  getLanguageName,
+  withRetry,
+  parseAnalysisResponse
+} from './shared';
 
+// Gemini-specific schema format (uses @google/genai Type)
 const analysisSchema = {
   type: Type.OBJECT,
   properties: {
@@ -62,41 +69,26 @@ export const model = "gemini-2.5-flash";
 
 class GeminiService implements ILLMService {
   private getApiKey(apiKey?: string): string {
-    // 1. Try the API key provided by the user in the settings
     if (apiKey) return apiKey;
 
-    // 2. Try to get the API key from localStorage (for user-provided keys)
     const userApiKey = localStorage.getItem('userGeminiApiKey');
     if (userApiKey) return userApiKey;
 
-    // 3. Fallback to the environment variable (for the developer's key)
     const envApiKey = process.env.GEMINI_API_KEY;
     if (envApiKey) return envApiKey;
 
-    // If no key is found, throw an error
     throw new Error("Gemini API key is not configured. Please add it in the settings.");
   }
 
   public async analyzeGames(
     pgnOfLostGames: string,
-    apiKey: string, // This can be from settings, might be empty
+    apiKey: string,
     lichessUser: string,
-    language: 'en' | 'de' | 'hy'
+    language: SupportedLanguage
   ): Promise<AnalysisReportData> {
     const finalApiKey = this.getApiKey(apiKey);
     const ai = new GoogleGenAI({ apiKey: finalApiKey });
-
-    let languageName: string;
-    switch (language) {
-      case 'de':
-        languageName = 'German';
-        break;
-      case 'hy':
-        languageName = 'Armenian';
-        break;
-      default:
-        languageName = 'English';
-    }
+    const languageName = getLanguageName(language);
 
     const prompt = `
       Analyze the following chess games that I, Lichess user "${lichessUser}", have lost.
@@ -117,11 +109,8 @@ class GeminiService implements ILLMService {
       2. When you list example games, you MUST precede the list with the keyword "GameId". For example: "... (e.g., GameId abcdefgh, ijklmnop)".
     `;
 
-    const maxRetries = 3;
-    let attempt = 0;
-
-    while (attempt < maxRetries) {
-      try {
+    return withRetry(
+      async () => {
         const response = await ai.models.generateContent({
           model: model,
           contents: prompt,
@@ -131,35 +120,15 @@ class GeminiService implements ILLMService {
           }
         });
 
-        const jsonText = response.text.trim();
-        const cleanJsonText = jsonText.replace(/^```json\n?/, '').replace(/\n?```$/, '');
-
-        const parsedData: AnalysisReportData = JSON.parse(cleanJsonText);
-        return parsedData;
-
-      } catch (error) {
-        console.error(`Attempt ${attempt + 1} failed:`, error);
-        const isOverloadedError = error instanceof Error && error.message.includes('"code":503');
-
-        if (isOverloadedError && attempt < maxRetries - 1) {
-          const delay = Math.pow(2, attempt) * 1000 + Math.random() * 1000;
-          console.log(`Model is overloaded. Retrying in ${Math.round(delay / 1000)}s...`);
-          await new Promise(resolve => setTimeout(resolve, delay));
-          attempt++;
-          continue;
-        }
-
-        if (error instanceof Error) {
-          throw new Error(`Failed to get analysis from AI: ${error.message}`);
-        }
-        throw new Error("An unknown error occurred while analyzing games.");
+        return parseAnalysisResponse(response.text);
+      },
+      {
+        isRetryableError: (e) => e.message.includes('"code":503'),
+        onRetry: (attempt, delay) =>
+          console.log(`Model is overloaded. Retrying in ${Math.round(delay / 1000)}s...`)
       }
-    }
-
-    throw new Error("Failed to get analysis from AI after multiple retries.");
+    );
   }
 }
 
 export default new GeminiService();
-
-

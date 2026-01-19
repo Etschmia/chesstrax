@@ -28,14 +28,6 @@ interface Report {
   analysisDate: Date;
 }
 
-// Map services to provider IDs - services are now loaded dynamically
-// const services: Record<string, ILLMService> = {
-//   gemini: geminiService,
-//   openai: openAIService,
-//   grok: grokService,
-//   anthropic: anthropicService,
-// };
-
 const App: React.FC = () => {
   const { t, i18n } = useTranslation();
   const { settings, providers } = useSettings();
@@ -201,22 +193,12 @@ const App: React.FC = () => {
       }
       const user = lichessUsername.trim();
 
-      // Log the usage immediately
-      console.log('Attempting to log usage for user:', user);
+      // Log usage (fire-and-forget, errors are silently ignored)
       fetch('/api/log', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username: user }),
-      })
-        .then(response => {
-          console.log('Usage log response status:', response.status);
-          if (!response.ok) {
-            console.error('Usage log failed with status:', response.status);
-            return response.text().then(text => console.error('Usage log error text:', text));
-          }
-          console.log('Usage log successful');
-        })
-        .catch(logError => console.error('Usage logging network error:', logError));
+      }).catch(() => { /* ignore logging errors */ });
 
       setIsFetchingPgn(true);
       try {
@@ -261,10 +243,6 @@ const App: React.FC = () => {
   if (isAnalyzing) loadingText = t('analyzing');
 
   const isAnalyzeButtonDisabled = isLoading || (dataSource === 'lichess' && !lichessUsername.trim()) || (dataSource === 'upload' && !pgnContent);
-  /*
-    console.log('Debug: process.env.VITE_OPENROUTER_API_KEY:', process.env.VITE_OPENROUTER_API_KEY ? 'present (length: ' + process.env.VITE_OPENROUTER_API_KEY.length + ')' : 'missing');
-    console.log('Debug: process.env.OPENROUTER_API_KEY:', process.env.OPENROUTER_API_KEY ? 'present (length: ' + process.env.OPENROUTER_API_KEY.length + ')' : 'missing');
-  */
   const openRouterKeyForDisplay = process.env.VITE_OPENROUTER_API_KEY || process.env.OPENROUTER_API_KEY;
   const effectiveProviderId = openRouterKeyForDisplay ? 'openrouter' : settings.selectedProviderId || 'gemini';
   const selectedProviderName = providers.find(p => p.id === effectiveProviderId)?.name || 'Google Gemini';

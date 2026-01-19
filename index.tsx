@@ -2,6 +2,7 @@ import React from 'react';
 import './src/index.css';
 import ReactDOM from 'react-dom/client';
 import { I18nextProvider } from 'react-i18next';
+import { Toaster } from 'react-hot-toast';
 import App from './App';
 import i18n from './public/i18n';
 import GoogleAnalytics from './components/GoogleAnalytics';
@@ -28,6 +29,7 @@ const root = ReactDOM.createRoot(rootElement);
 root.render(
   <React.StrictMode>
     <GoogleAnalytics />
+    <Toaster position="top-center" />
     <I18nextProvider i18n={i18n}>
       <App />
     </I18nextProvider>

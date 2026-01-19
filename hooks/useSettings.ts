@@ -19,7 +19,7 @@ const useSettings = () => {
     // Default settings
     return {
       selectedProviderId: null,
-      apiKeys: { openai: '', anthropic: '', grok: '' },
+      apiKeys: { gemini: '', openai: '', anthropic: '', grok: '', openrouter: '' },
     };
   });
 
