@@ -59,6 +59,8 @@
   "uploadPgn": "Upload PGN",
   "fetchingGames": "Fetching games from Lichess...",
   "fetchingGamesDescription": "Fetches up to 2000 of your most recent games. This may take a minute.",
+  "connecting": "Connecting...",
+  "gamesLoaded": "{{count}} games loaded...",
   "error.userNotFound": "User '{{user}}' not found on Lichess. Please check the username.",
   "error.lichessFetch": "Failed to fetch games from Lichess. Please try again later. Details: {{error}}",
   "error.noUser": "Please enter a Lichess username.",

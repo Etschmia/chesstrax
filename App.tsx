@@ -35,6 +35,7 @@ const App: React.FC = () => {
   const [pgnContent, setPgnContent] = useState<string | null>(null);
   const [report, setReport] = useState<Report | null>(null);
   const [isFetchingPgn, setIsFetchingPgn] = useState<boolean>(false);
+  const [progressText, setProgressText] = useState<string | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [dataSource, setDataSource] = useState<DataSource>('lichess');
@@ -201,8 +202,12 @@ const App: React.FC = () => {
       }).catch(() => { /* ignore logging errors */ });
 
       setIsFetchingPgn(true);
+      setProgressText(t('connecting'));
       try {
-        const pgn = await fetchPgnFromLichess(user);
+        const pgn = await fetchPgnFromLichess(user, (gameCount) => {
+          setProgressText(t('gamesLoaded', { count: gameCount }));
+        });
+        setProgressText(null);
         setPgnContent(pgn);
         await performAnalysis(pgn, user);
       } catch (e) {
@@ -212,6 +217,7 @@ const App: React.FC = () => {
           setError(t('error.lichessFetch', { error: e instanceof Error ? e.message : 'Unknown error' }));
         }
       } finally {
+        setProgressText(null);
         setIsFetchingPgn(false);
       }
     } else { // 'upload'
@@ -253,7 +259,7 @@ const App: React.FC = () => {
         <div className="text-center p-8 bg-gray-secondary rounded-2xl w-full max-w-lg mx-auto flex flex-col items-center justify-center h-64">
           <Spinner />
           <p className="mt-4 text-lg font-semibold text-text-primary">{loadingText}</p>
-          {isFetchingPgn && <p className="text-text-secondary text-sm mt-2">{t('fetchingGamesDescription')}</p>}
+          {isFetchingPgn && <p className="text-text-secondary text-sm mt-2">{progressText || t('fetchingGamesDescription')}</p>}
         </div>
       );
     }

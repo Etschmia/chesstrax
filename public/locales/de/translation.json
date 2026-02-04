@@ -59,6 +59,8 @@
   "uploadPgn": "PGN hochladen",
   "fetchingGames": "Hole Partien von Lichess...",
   "fetchingGamesDescription": "Es werden bis zu 2000 deiner letzten Partien geladen. Dies kann eine Minute dauern.",
+  "connecting": "Verbinde...",
+  "gamesLoaded": "{{count}} Partien geladen...",
   "error.userNotFound": "Benutzer '{{user}}' wurde auf Lichess nicht gefunden. Bitte \u00fcberpr\u00fcfe den Namen.",
   "error.lichessFetch": "Partien konnten nicht von Lichess geladen werden. Bitte versuche es sp\u00e4ter erneut. Details: {{error}}",
   "error.noUser": "Bitte gib einen Lichess-Benutzernamen ein.",
