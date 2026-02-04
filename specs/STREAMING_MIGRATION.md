@@ -1,4 +1,4 @@
-# Handlungsanweisung: Lichess/Chess.com auf Streaming umstellen
+# ✅ ERLEDIGT — Handlungsanweisung: Lichess/Chess.com auf Streaming umstellen
 
 ## Kontext
 
