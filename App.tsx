@@ -49,9 +49,11 @@ const App: React.FC = () => {
 
   const { detectedUser } = usePgnParser(pgnContent);
 
-  // Preload the default Gemini service on component mount
+  // Preload the configured LLM service on component mount
   useEffect(() => {
-    ServiceFactory.preloadService('gemini').catch(() => {
+    const openRouterKey = process.env.VITE_OPENROUTER_API_KEY || process.env.OPENROUTER_API_KEY;
+    const providerId = openRouterKey ? 'openrouter' : (settings.selectedProviderId || 'gemini');
+    ServiceFactory.preloadService(providerId).catch(() => {
       // Silently fail, service will be loaded when needed
     });
   }, []);

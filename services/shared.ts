@@ -61,6 +61,9 @@ export const analysisJsonSchema = {
   required: ["openingAnalysis", "tacticalMotifs", "strategicWeaknesses", "endgamePractice", "summary"]
 } as const;
 
+/** Pre-serialized schema string (avoids JSON.stringify on every call) */
+const analysisJsonSchemaString = JSON.stringify(analysisJsonSchema, null, 2);
+
 /**
  * Convert language code to full language name
  */
@@ -163,8 +166,6 @@ Please provide the analysis in the structured JSON format as requested. Be conci
 export function buildSystemPrompt(language: SupportedLanguage): string {
   const languageName = getLanguageName(language);
   const toneInstruction = getToneInstruction(language);
-  const schemaJson = JSON.stringify(analysisJsonSchema, null, 2);
-
   return `
 You are a helpful and insightful chess coach. Your task is to analyze a set of chess games from a user and provide a personalized training plan.
 The user wants the output in a specific JSON format.
@@ -175,7 +176,7 @@ The entire analysis and all text in the final JSON object must be in ${languageN
 2. When you list example games, you MUST precede the list with the keyword "GameId". For example: "... (e.g., GameId abcdefgh, ijklmnop)".
 3. The output must be a valid JSON object conforming exactly to this schema, with no additional text or explanations outside the JSON:
 \`\`\`json
-${schemaJson}
+${analysisJsonSchemaString}
 \`\`\`
 `;
 }

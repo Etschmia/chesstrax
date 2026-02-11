@@ -1,17 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 
 const ApiKeyManager: React.FC = () => {
   const { t } = useTranslation();
-  const [apiKey, setApiKey] = useState('');
-
-  useEffect(() => {
-    const savedApiKey = localStorage.getItem('userGeminiApiKey');
-    if (savedApiKey) {
-      setApiKey(savedApiKey);
-    }
-  }, []);
+  const [apiKey, setApiKey] = useState(() => localStorage.getItem('userGeminiApiKey') || '');
 
   const handleSaveApiKey = (e: React.FormEvent) => {
     e.preventDefault();

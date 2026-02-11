@@ -32,6 +32,7 @@ export const fetchPgnFromLichess = async (
         const decoder = new TextDecoder();
         const chunks: string[] = [];
         let gameCount = 0;
+        const eventRegex = /\[Event\s/g;
 
         for (;;) {
             const { done, value } = await reader.read();
@@ -40,7 +41,7 @@ export const fetchPgnFromLichess = async (
             const text = decoder.decode(value, { stream: true });
             chunks.push(text);
 
-            const matches = text.match(/\[Event\s/g);
+            const matches = text.match(eventRegex);
             if (matches) {
                 gameCount += matches.length;
                 onProgress(gameCount);
