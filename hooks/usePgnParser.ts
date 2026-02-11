@@ -54,6 +54,9 @@ export const findUserGames = (pgnContent: string, user: string): { lostGamesPgn:
     const dateRegex = /\[(UTC)?Date "(.*?)"\]/;
     const resultRegex = /\[Result "(.*?)"\]/;
 
+    const whiteRegex = new RegExp(`\\[White "${user}"\\]`, 'i');
+    const blackRegex = new RegExp(`\\[Black "${user}"\\]`, 'i');
+
     for (const game of games) {
         // Extract date from every game to establish the full range
         const dateMatch = game.match(dateRegex);
@@ -62,8 +65,8 @@ export const findUserGames = (pgnContent: string, user: string): { lostGamesPgn:
             allDates.push(dateMatch[2].replace(/\./g, '-'));
         }
 
-        const isWhite = new RegExp(`\\[White "${user}"\\]`, 'i').test(game);
-        const isBlack = new RegExp(`\\[Black "${user}"\\]`, 'i').test(game);
+        const isWhite = whiteRegex.test(game);
+        const isBlack = blackRegex.test(game);
         
         if (!isWhite && !isBlack) {
             continue;

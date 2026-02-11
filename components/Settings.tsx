@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useSettings from '../hooks/useSettings';
 import { LLMProvider } from '../llmProviders';
@@ -9,17 +9,13 @@ const Settings: React.FC = () => {
   const { settings, saveSettings, providers } = useSettings();
   const [selectedProviderId, setSelectedProviderId] = useState(settings.selectedProviderId);
   const [apiKeys, setApiKeys] = useState(settings.apiKeys);
-  const [currentApiKey, setCurrentApiKey] = useState('');
+  const [currentApiKey, setCurrentApiKey] = useState(selectedProviderId ? (apiKeys[selectedProviderId] || '') : '');
   const [isSaved, setIsSaved] = useState(false);
 
-  useEffect(() => {
-    if (selectedProviderId) {
-      setCurrentApiKey(apiKeys[selectedProviderId] || '');
-    }
-  }, [selectedProviderId, apiKeys]);
-
   const handleProviderChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedProviderId(e.target.value as LLMProvider['id']);
+    const newId = e.target.value as LLMProvider['id'];
+    setSelectedProviderId(newId);
+    setCurrentApiKey(apiKeys[newId] || '');
     setIsSaved(false);
   };
 
