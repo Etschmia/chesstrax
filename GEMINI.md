@@ -1,39 +1,5 @@
-## Projektübersicht: chesstrax-ai-coach
+# GEMINI.md
 
-Dieses Projekt ist eine Webanwendung, die als KI-gestützter Schachtrainer fungiert. Sie analysiert die Schachpartien eines Benutzers (im PGN-Format), um wiederkehrende Fehler und Verbesserungspotenziale aufzuzeigen. Die Kernanalyse wird durch die Gemini-API von Google durchgeführt.
+Dieses Projekt verwendet `CLAUDE.md` als zentrale Referenz für Projektübersicht, Architektur und Entwicklungsrichtlinien.
 
-### Technologie-Stack
-
-- **Framework**: React (mit TypeScript/TSX)
-- **Build-Tool**: Vite
-- **Abhängigkeiten (Auswahl)**:
-  - `@google/genai`: Für die Kommunikation mit der Gemini-API.
-  - `react-i18next`, `i18next`: Für die Internationalisierung (i18n).
-  - `lucide-react`: Für Icons.
-  - `html2canvas`, `jspdf`: Für das Erstellen von PDF-Berichten.
-
-### Kernfunktionen
-
-- **Lichess-API-Integration**: Die Partien werden direkt über die Lichess-API abgerufen, anstatt einen manuellen PGN-Upload zu erfordern.
-- **PGN-Upload**: Benutzer können ihre von Lichess exportierten PGN-Dateien hochladen.
-- **Analyse**: Die Anwendung sendet die Spieldaten an die Gemini-API, um taktische, strategische und eröffnungsspezifische Fehler zu identifizieren.
-- **Berichte**: Die Ergebnisse werden in einem Analysebericht dargestellt.
-- **Internationalisierung**: Die Benutzeroberfläche ist mehrsprachig (de, en, hy).
-- **Eigener API-Schlüssel**: Benutzer können ihren eigenen Gemini-API-Schlüssel in der Anwendung hinterlegen. Dieser wird lokal im Browser gespeichert und für die Analyse verwendet, anstatt auf den Standard-Schlüssel des Entwicklers zurückzugreifen.
-
-
-### Wichtige Dateien
-
-- `App.tsx`: Hauptkomponente der React-Anwendung.
-- `ApiKeyManager.tsx`: Komponente zur Verwaltung des benutzerdefinierten API-Schlüssels.
-- `package.json`: Definiert Skripte und Abhängigkeiten.
-- `services/geminiService.ts`: Enthält die Logik für die Interaktion mit der Gemini-API.
-- `hooks/usePgnParser.ts`: Ein React-Hook zur Verarbeitung von PGN-Daten.
-- `components/`: Verzeichnis für die React-Komponenten.
-- `src/locales/`: Enthält die Übersetzungsdateien.
-
-### Befehle
-
-- **Entwicklungsserver starten**: `npm run dev`
-- **Produktions-Build erstellen**: `npm run build`
-- **Build-Vorschau**: `npm run preview`
+Bitte orientieren Sie sich an der [CLAUDE.md](./CLAUDE.md) für alle technischen Details und Anweisungen.
