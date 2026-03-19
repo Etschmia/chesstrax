@@ -1,8 +1,10 @@
 import path from 'path';
+import { createRequire } from 'module';
 import { defineConfig, loadEnv } from 'vite';
 import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const require = createRequire(import.meta.url);
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, '.', '');
@@ -11,7 +13,7 @@ export default defineConfig(({ mode }) => {
   const buildDate = new Date().toISOString().split('T')[0];
   const buildTime = new Date().toTimeString().split(' ')[0];
 
-  // Read version from package.json
+  // Read version from package.json (createRequire für ESM-Kompatibilität mit Vite 8)
   const packageJson = require('./package.json');
   const version = packageJson.version;
 
@@ -28,14 +30,20 @@ export default defineConfig(({ mode }) => {
     build: {
       rollupOptions: {
         output: {
-          manualChunks: {
-            // Vendor chunks
-            'react-vendor': ['react', 'react-dom'],
-            'ui-vendor': ['lucide-react'],
-            'i18n-vendor': ['i18next', 'react-i18next', 'i18next-browser-languagedetector', 'i18next-http-backend'],
-
-            // Core LLM communication libraries (but not service implementations)
-            'http-vendor': ['axios'],
+          // Rolldown (Vite 8) erfordert manualChunks als Funktion
+          manualChunks(id) {
+            if (id.includes('react-dom') || id.includes('react/')) {
+              return 'react-vendor';
+            }
+            if (id.includes('lucide-react')) {
+              return 'ui-vendor';
+            }
+            if (id.includes('i18next')) {
+              return 'i18n-vendor';
+            }
+            if (id.includes('axios')) {
+              return 'http-vendor';
+            }
           }
         }
       }

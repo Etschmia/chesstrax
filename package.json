@@ -9,16 +9,16 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@google/genai": "^1.11.0",
+    "@google/genai": "^1.46.0",
     "axios": "^1.12.1",
     "express": "^5.1.0",
     "html2canvas": "1.4.1",
     "i18next": "^25.3.2",
     "i18next-browser-languagedetector": "^8.2.0",
     "i18next-http-backend": "^3.0.2",
-    "jspdf": "^4.0.0",
-    "lucide-react": "^0.554.0",
-    "openai": "^6.9.1",
+    "jspdf": "^4.2.1",
+    "lucide-react": "^0.577.0",
+    "openai": "^6.32.0",
     "react": "^19.2.1",
     "react-dom": "^19.2.1",
     "react-hot-toast": "^2.6.0",
@@ -32,6 +32,6 @@
     "postcss": "^8.5.6",
     "tailwindcss": "^4.1.17",
     "typescript": "^5.9.3",
-    "vite": "^7.2.4"
+    "vite": "^8.0.1"
   }
 }
