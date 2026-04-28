@@ -1,6 +1,7 @@
 import OpenAI from 'openai';
 import type { AnalysisReportData } from '../types';
 import { ILLMService } from './llmService';
+import { getModel } from '../llmProviders';
 import {
   SupportedLanguage,
   buildSystemPrompt,
@@ -36,7 +37,7 @@ class OpenRouterService implements ILLMService {
     return withRetry(
       async () => {
         const response = await openrouter.chat.completions.create({
-          model: 'x-ai/grok-4-fast:free',
+          model: getModel('openrouter'),
           messages: [
             { role: 'system', content: systemPrompt },
             { role: 'user', content: userPrompt },

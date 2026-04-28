@@ -1,6 +1,7 @@
 import OpenAI from 'openai';
 import type { AnalysisReportData } from '../types';
 import { ILLMService } from './llmService';
+import { getModel } from '../llmProviders';
 import {
   SupportedLanguage,
   buildSystemPrompt,
@@ -28,7 +29,7 @@ class GrokService implements ILLMService {
     return withRetry(
       async () => {
         const response = await grok.chat.completions.create({
-          model: 'grok-1',
+          model: getModel('grok'),
           messages: [
             { role: 'system', content: systemPrompt },
             { role: 'user', content: userPrompt },

@@ -1,21 +1,24 @@
-
+import { lichessDefaults } from '../llmProviders';
 
 const LICHESS_API_BASE_URL = "https://lichess.org/api/games/user/";
-const MAX_GAMES = 2000;
 const PERF_TYPES = "blitz,rapid,classical,correspondence,standard";
-const API_PARAMS = `tags=true&clocks=true&evals=true&opening=true&literate=true&max=${MAX_GAMES}&perfType=${PERF_TYPES}`;
+
+const buildApiParams = (maxGames: number): string =>
+  `tags=true&clocks=true&evals=true&opening=true&literate=true&sort=dateDesc&max=${maxGames}&perfType=${PERF_TYPES}`;
 
 /**
  * Fetches the PGN data for a given Lichess user.
  * @param username The Lichess username.
- * @returns A promise that resolves to the PGN string.
- * @throws An error if the fetch request fails or the user is not found.
+ * @param maxGames Maximum number of games to fetch (newest first; older games drop off).
+ * @param onProgress Optional progress callback invoked with the running game count.
  */
 export const fetchPgnFromLichess = async (
   username: string,
+  maxGames: number = lichessDefaults.defaultGameCount,
   onProgress?: (gameCount: number) => void,
 ): Promise<string> => {
-    const url = `${LICHESS_API_BASE_URL}${username}?${API_PARAMS}`;
+    const cappedMax = Math.max(1, Math.min(maxGames, lichessDefaults.maxGameCount));
+    const url = `${LICHESS_API_BASE_URL}${username}?${buildApiParams(cappedMax)}`;
 
     const response = await fetch(url, {
         headers: {

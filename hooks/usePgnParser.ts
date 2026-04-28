@@ -1,16 +1,19 @@
 import { useMemo } from 'react';
 
+export interface LostGame {
+    pgn: string;
+    /** ISO-ish date (YYYY-MM-DD) extracted from PGN headers, or empty string if missing. */
+    date: string;
+}
+
 interface PgnParseResult {
-    lostGamesPgn: string[];
+    lostGames: LostGame[];
     gameDates: string[];
     detectedUser: string | null;
 }
 
 /**
  * Detects the most frequent user from a PGN string.
- * This is a pure function and can be called from anywhere.
- * @param pgnContent The full PGN string.
- * @returns The detected username or null.
  */
 export const detectUserFromPgn = (pgnContent: string | null): string | null => {
     if (!pgnContent) return null;
@@ -28,7 +31,7 @@ export const detectUserFromPgn = (pgnContent: string | null): string | null => {
             const user = whiteMatch[1].trim();
             if (user && user !== '?') userFrequencies[user] = (userFrequencies[user] || 0) + 1;
         }
-        
+
         const blackMatch = game.match(blackUserRegex);
         if (blackMatch && blackMatch[1]) {
             const user = blackMatch[1].trim();
@@ -41,15 +44,15 @@ export const detectUserFromPgn = (pgnContent: string | null): string | null => {
 };
 
 /**
- * Finds lost games and all game dates for a specific user from a PGN string.
- * This is a pure function and can be called from anywhere.
- * @param pgnContent The full PGN string.
- * @param user The username to search for.
- * @returns An object with the user's lost games and all game dates found.
+ * Finds lost games (with their date) and all game dates for a specific user.
+ * Lost games are returned sorted by date descending — newest first.
  */
-export const findUserGames = (pgnContent: string, user: string): { lostGamesPgn: string[], gameDates: string[] } => {
+export const findUserGames = (
+    pgnContent: string,
+    user: string,
+): { lostGames: LostGame[]; gameDates: string[] } => {
     const games = pgnContent.split(/(?=\[Event ")/).filter(p => p.trim() !== '');
-    const lostGames: string[] = [];
+    const lostGames: LostGame[] = [];
     const allDates: string[] = [];
     const dateRegex = /\[(UTC)?Date "(.*?)"\]/;
     const resultRegex = /\[Result "(.*?)"\]/;
@@ -58,50 +61,52 @@ export const findUserGames = (pgnContent: string, user: string): { lostGamesPgn:
     const blackRegex = new RegExp(`\\[Black "${user}"\\]`, 'i');
 
     for (const game of games) {
-        // Extract date from every game to establish the full range
         const dateMatch = game.match(dateRegex);
-        if (dateMatch && dateMatch[2]) {
-            // Normalize date to YYYY-MM-DD for consistent parsing
-            allDates.push(dateMatch[2].replace(/\./g, '-'));
+        const normalizedDate = dateMatch && dateMatch[2] ? dateMatch[2].replace(/\./g, '-') : '';
+        if (normalizedDate) {
+            allDates.push(normalizedDate);
         }
 
         const isWhite = whiteRegex.test(game);
         const isBlack = blackRegex.test(game);
-        
-        if (!isWhite && !isBlack) {
-            continue;
-        }
-        
+        if (!isWhite && !isBlack) continue;
+
         const resultMatch = game.match(resultRegex);
-        if (resultMatch) {
-            const result = resultMatch[1];
-            if ((isWhite && result === '0-1') || (isBlack && result === '1-0')) {
-                lostGames.push(game.trim());
-            }
+        if (!resultMatch) continue;
+        const result = resultMatch[1];
+
+        if ((isWhite && result === '0-1') || (isBlack && result === '1-0')) {
+            lostGames.push({ pgn: game.trim(), date: normalizedDate });
         }
     }
-    return { lostGamesPgn: lostGames, gameDates: allDates };
+
+    // Sort newest first; games without a parseable date go to the end.
+    lostGames.sort((a, b) => {
+        if (!a.date && !b.date) return 0;
+        if (!a.date) return 1;
+        if (!b.date) return -1;
+        return b.date.localeCompare(a.date);
+    });
+
+    return { lostGames, gameDates: allDates };
 };
 
 
 /**
- * A React hook that parses a PGN string to provide reactive data for the UI.
- * It detects the most frequent user and finds their lost games.
- * Primarily used for displaying info about a PGN file as it's uploaded.
+ * React hook for reactive PGN parsing in the UI (PGN file preview).
  */
 export const usePgnParser = (pgnContent: string | null): PgnParseResult => {
   return useMemo(() => {
     if (!pgnContent) {
-      return { lostGamesPgn: [], gameDates: [], detectedUser: null };
+      return { lostGames: [], gameDates: [], detectedUser: null };
     }
 
     const detectedUser = detectUserFromPgn(pgnContent);
     if (!detectedUser) {
-        return { lostGamesPgn: [], gameDates: [], detectedUser: null };
+        return { lostGames: [], gameDates: [], detectedUser: null };
     }
 
-    const { lostGamesPgn, gameDates } = findUserGames(pgnContent, detectedUser);
-    
-    return { lostGamesPgn, gameDates, detectedUser };
+    const { lostGames, gameDates } = findUserGames(pgnContent, detectedUser);
+    return { lostGames, gameDates, detectedUser };
   }, [pgnContent]);
 };

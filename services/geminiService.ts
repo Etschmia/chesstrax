@@ -1,6 +1,7 @@
 import { GoogleGenAI, Type } from '@google/genai';
 import type { AnalysisReportData } from '../types';
 import { ILLMService } from './llmService';
+import { getModel } from '../llmProviders';
 import {
   SupportedLanguage,
   getLanguageName,
@@ -65,7 +66,7 @@ const analysisSchema = {
   required: ["openingAnalysis", "tacticalMotifs", "strategicWeaknesses", "endgamePractice", "summary"]
 };
 
-export const model = "gemini-2.5-flash";
+export const model = getModel('gemini');
 
 class GeminiService implements ILLMService {
   private getApiKey(apiKey?: string): string {
@@ -95,6 +96,8 @@ class GeminiService implements ILLMService {
       Based on these games, create a personalized training plan.
       Identify recurring patterns in my mistakes. Do not comment on individual blunders unless they exemplify a recurring pattern.
       Focus on actionable advice.
+
+      The games are listed in chronological order, **most recent first**. When recurring weaknesses appear in the more recent games, weight them more heavily — they reflect my current skill level. Older games matter mostly to confirm whether a pattern is still present today or has already been resolved.
 
       Here are the PGNs of my lost games:
       ---

@@ -5,6 +5,7 @@ import { fetchPgnFromLichess } from './services/lichessService';
 import { usePgnParser, findUserGames } from './hooks/usePgnParser';
 import useSettings from './hooks/useSettings';
 import { ServiceFactory } from './services/serviceFactory.js';
+import { lichessDefaults, analysisDefaults } from './llmProviders';
 
 import FileUpload, { FileUploadRef } from './components/FileUpload';
 import Spinner from './components/Spinner';
@@ -40,6 +41,7 @@ const App: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [dataSource, setDataSource] = useState<DataSource>('lichess');
   const [lichessUsername, setLichessUsername] = useState('');
+  const [lichessGameCount, setLichessGameCount] = useState<number>(lichessDefaults.defaultGameCount);
   const [isSettingsPanelOpen, setIsSettingsPanelOpen] = useState(false);
   const [isApiKeyPanelOpen, setIsApiKeyPanelOpen] = useState(false);
   const [isLlmDialogOpen, setIsLlmDialogOpen] = useState(false);
@@ -151,9 +153,9 @@ const App: React.FC = () => {
       return;
     }
 
-    const { lostGamesPgn, gameDates: parsedGameDates } = findUserGames(pgn, user);
+    const { lostGames, gameDates: parsedGameDates } = findUserGames(pgn, user);
 
-    if (lostGamesPgn.length === 0) {
+    if (lostGames.length === 0) {
       setError(t('error.noLostGames'));
       return;
     }
@@ -163,7 +165,10 @@ const App: React.FC = () => {
     setReport(null);
 
     try {
-      const gamesToAnalyze = lostGamesPgn.slice(-50).join('\n\n');
+      const gamesToAnalyze = lostGames
+        .slice(0, analysisDefaults.maxLostGamesForLlm)
+        .map(g => g.pgn)
+        .join('\n\n');
 
       const currentLang = i18n.language;
       let apiLang: 'en' | 'de' | 'hy' = 'en';
@@ -206,7 +211,7 @@ const App: React.FC = () => {
       setIsFetchingPgn(true);
       setProgressText(t('connecting'));
       try {
-        const pgn = await fetchPgnFromLichess(user, (gameCount) => {
+        const pgn = await fetchPgnFromLichess(user, lichessGameCount, (gameCount) => {
           setProgressText(t('gamesLoaded', { count: gameCount }));
         });
         setProgressText(null);
@@ -234,7 +239,7 @@ const App: React.FC = () => {
       }
       await performAnalysis(pgnContent, user);
     }
-  }, [dataSource, lichessUsername, pgnContent, performAnalysis, t]);
+  }, [dataSource, lichessUsername, lichessGameCount, pgnContent, performAnalysis, t, detectedUser]);
 
   const changeLanguage = (lng: 'en' | 'de' | 'hy') => {
     i18n.changeLanguage(lng);
@@ -301,6 +306,28 @@ const App: React.FC = () => {
             placeholder={t('lichessUsernamePlaceholder')}
             className="w-full h-12 bg-gray-tertiary border-2 border-gray-tertiary focus:border-accent focus:ring-0 focus:outline-hidden rounded-lg px-4 text-text-primary placeholder:text-text-secondary/70"
           />
+        </div>
+
+        <div className="mt-4 text-left">
+          <label htmlFor="lichess-game-count" className="block text-sm font-medium text-text-secondary mb-2">
+            {t('gameCountLabel', { max: lichessDefaults.maxGameCount })}
+          </label>
+          <input
+            type="number"
+            id="lichess-game-count"
+            min={1}
+            max={lichessDefaults.maxGameCount}
+            step={50}
+            value={lichessGameCount}
+            onChange={(e) => {
+              const raw = parseInt(e.target.value, 10);
+              if (Number.isNaN(raw)) return;
+              const clamped = Math.max(1, Math.min(raw, lichessDefaults.maxGameCount));
+              setLichessGameCount(clamped);
+            }}
+            className="w-full h-12 bg-gray-tertiary border-2 border-gray-tertiary focus:border-accent focus:ring-0 focus:outline-hidden rounded-lg px-4 text-text-primary"
+          />
+          <p className="mt-1 text-xs text-text-secondary">{t('gameCountHelp')}</p>
         </div>
 
         <div className="flex items-center my-4">

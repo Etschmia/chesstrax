@@ -1,0 +1,41 @@
+{
+  "providers": {
+    "gemini": {
+      "name": "Google Gemini",
+      "apiKeyName": "Gemini API Key",
+      "documentationUrl": "https://aistudio.google.com/apikey",
+      "model": "gemini-flash-latest"
+    },
+    "openai": {
+      "name": "OpenAI GPT-4",
+      "apiKeyName": "OpenAI API Key",
+      "documentationUrl": "https://platform.openai.com/api-keys",
+      "model": "gpt-4o"
+    },
+    "grok": {
+      "name": "xAI Grok",
+      "apiKeyName": "xAI API Key",
+      "documentationUrl": "https://x.ai/",
+      "model": "grok-1"
+    },
+    "anthropic": {
+      "name": "Anthropic Claude 3",
+      "apiKeyName": "Anthropic API Key",
+      "documentationUrl": "https://docs.anthropic.com/claude/reference/getting-started-with-the-api",
+      "model": "claude-3-5-sonnet-latest"
+    },
+    "openrouter": {
+      "name": "xAI Grok 4 Fast",
+      "apiKeyName": "OpenRouter API Key",
+      "documentationUrl": "https://openrouter.ai/docs",
+      "model": "x-ai/grok-4-fast:free"
+    }
+  },
+  "lichess": {
+    "defaultGameCount": 300,
+    "maxGameCount": 900
+  },
+  "analysis": {
+    "maxLostGamesForLlm": 50
+  }
+}
