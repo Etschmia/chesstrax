@@ -41,7 +41,7 @@ class GrokService implements ILLMService {
       },
       {
         isRetryableError: (e) => e.message.includes('503') || e.message.includes('429'),
-        onRetry: (attempt, delay) =>
+        onRetry: (_attempt, delay) =>
           console.log(`Model is overloaded or rate limited. Retrying in ${Math.round(delay / 1000)}s...`)
       }
     );

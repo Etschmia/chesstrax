@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { providers, LLMProvider } from '../llmProviders';
 
 export interface SettingsState {

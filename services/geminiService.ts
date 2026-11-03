@@ -127,7 +127,7 @@ class GeminiService implements ILLMService {
       },
       {
         isRetryableError: (e) => e.message.includes('"code":503'),
-        onRetry: (attempt, delay) =>
+        onRetry: (_attempt, delay) =>
           console.log(`Model is overloaded. Retrying in ${Math.round(delay / 1000)}s...`)
       }
     );
